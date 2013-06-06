@@ -8,7 +8,7 @@ class WPSC_Controller_Single extends WPSC_Query_Controller {
 
 	public function index() {
 		$this->title = get_queried_object()->post_title;
-		$this->view = 'product-single';
+		$this->view = 'single';
 	}
 
 	public function get_native_template() {
