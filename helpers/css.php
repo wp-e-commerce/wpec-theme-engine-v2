@@ -1,16 +1,17 @@
 <?php
 
-add_action( 'wp_enqueue_scripts', '_wpsc_te2_enqueue_styles' );
+add_action( 'wp_enqueue_scripts', '_wpsc_te2_enqueue_styles', 1 );
 
 function _wpsc_te2_enqueue_styles() {
 	wp_register_style( 'wpsc-common', wpsc_locate_asset_uri( 'css/common.css' ), array(), WPSC_VERSION );
 
-	if ( wpsc_get_option( 'default_style', 1 ) )
+	if ( wpsc_get_option( 'default_style', 1 ) ) {
 		wp_enqueue_style( 'wpsc-common' );
 
-	$add_inline_style = apply_filters( 'wpsc_add_inline_style', true );
-	if ( $add_inline_style )
-		wp_add_inline_style( 'wpsc-common', _wpsc_get_inline_style() );
+		$add_inline_style = apply_filters( 'wpsc_add_inline_style', true );
+		if ( $add_inline_style )
+			wp_add_inline_style( 'wpsc-common', _wpsc_get_inline_style() );
+	}
 }
 
 function _wpsc_get_inline_style() {
