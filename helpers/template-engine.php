@@ -180,11 +180,11 @@ function wpsc_locate_template( $template_names, $load = false, $require_once = t
 
 function wpsc_locate_template_part( $files, $load = false, $require_once = true ) {
 	$paths = array(
-		STYLESHEETPATH . '/wp-e-commerce/views',
+		STYLESHEETPATH . '/wp-e-commerce/template-part',
 	);
 
 	if ( is_child_theme() )
-		$paths[] = TEMPLATEPATH . '/wp-e-commerce/views';
+		$paths[] = TEMPLATEPATH . '/wp-e-commerce/template-parts';
 
 	$paths[] = WPSC_TE_V2_VIEWS_PATH;
 
