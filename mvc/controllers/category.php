@@ -1,13 +1,14 @@
 <?php
 require_once( WPSC_TE_V2_CLASSES_PATH . '/query-controller.php' );
 
-class WPSC_Controller_Taxonomy extends WPSC_Query_Controller {
+class WPSC_Controller_Category extends WPSC_Query_Controller {
 	public function __construct() {
 		parent::__construct();
 	}
 
 	public function index() {
-		$this->view = 'taxonomy';
+		$term = get_queried_object();
+		$this->view = 'category';
 		$this->title = get_queried_object()->name;
 	}
 

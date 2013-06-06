@@ -68,7 +68,7 @@ class WPSC_Router {
 		elseif ( is_singular( 'wpsc-product' ) )
 			$controller = 'single';
 		elseif ( is_tax( 'wpsc_product_category' ) )
-			$controller = 'taxonomy';
+			$controller = 'category';
 
 		$this->init_query_flags( $controller );
 
