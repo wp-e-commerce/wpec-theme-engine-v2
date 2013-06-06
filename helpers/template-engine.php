@@ -218,7 +218,11 @@ function wpsc_locate_view_wrappers( $files, $load = false, $require_once = true 
  * @param  string $slug The slug name for the generic template.
  * @param  string $name The name of the specialised template. Optional. Default null.
  */
-function wpsc_get_template_part( $slug, $name = null ) {
+function wpsc_get_template_part( $slug = false, $name = null ) {
+	if ( ! $slug ) {
+		$controller = _wpsc_get_current_controller();
+		$slug = $controller->view;
+	}
 	do_action( "wpsc_get_template_part_{$slug}", $slug, $name );
 
 	$templates = array();
