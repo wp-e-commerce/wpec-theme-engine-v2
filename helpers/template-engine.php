@@ -586,22 +586,19 @@ function _wpsc_filter_body_class( $classes ) {
 }
 add_filter( 'body_class', '_wpsc_filter_body_class' );
 
-function _wpsc_filter_title( $title, $sep, $sep_location ) {
+function _wpsc_filter_title( $title ) {
 	if ( wpsc_is_controller() ) {
-		$prefix = " {$sep} ";
-
 		$controller = _wpsc_get_current_controller();
-		$title = $controller->title;
-
-		if ( $sep_location == 'right' )
-			$title .= $prefix;
-		else
-			$title = $prefix . $title;
+		if (    is_post_type_archive( 'wpsc-product' )
+			 || get_post_type() == 'page'
+		)
+			return $controller->title;
 	}
 
 	return $title;
 }
-add_filter( 'wp_title', '_wpsc_filter_title', 20, 3 );
+add_filter( 'post_type_archive_title', '_wpsc_filter_title', 1 );
+add_filter( 'single_post_title', '_wpsc_filter_title', 1 );
 
 add_action( 'update_option_users_can_register', '_wpsc_action_flush_rewrite_rules' );
 
