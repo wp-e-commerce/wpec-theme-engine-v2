@@ -33,7 +33,7 @@ class WPSC_Router {
 	private function __construct() {
 		add_action( 'parse_request', array( $this, '_action_parse_request' ) );
 		add_filter( 'query_vars', array( $this, '_filter_query_vars' ) );
-		add_action( 'wp', array( $this, '_action_wp' ), 1 );
+		add_action( 'wp', array( $this, '_action_wp' ), 2 );
 	}
 
 	public function _action_parse_request( &$wp ) {
