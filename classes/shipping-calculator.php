@@ -3,6 +3,17 @@
 final class WPSC_Shipping_Calculator {
 	private static $instances = array();
 	public static function get_instance( $purchase_log = false ) {
+		if ( empty( $purchase_log ) ) {
+			$purchase_log = (int) wpsc_get_customer_meta( 'current_purchase_log_id' );
+			if ( ! $purchase_log )
+				return;
+		}
+
+		if ( is_int( $purchase_log ) )
+			$purchase_log = new WPSC_Purchase_Log( $purchase_log );
+
+		$id = $purchase_log->get( 'id' );
+
 		if ( ! array_key_exists( $id, self::$instances ) )
 			self::$instances[$id] = new WPSC_Shipping_Calculator( $purchase_log );
 
