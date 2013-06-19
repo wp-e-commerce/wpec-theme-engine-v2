@@ -110,6 +110,9 @@ class WPSC_Settings_Form
 
 	public function callback_section_description( $section ) {
 		$section_id = $section['id'];
+		if ( ! array_key_exists( 'description', $this->sections[$section_id] ) )
+			return;
+
 		$description = $this->sections[$section_id]['description'];
 		$description = apply_filters( 'wpsc_' . $section_id . '_description', $description );
 		echo '<p>' . $description . '</p>';
