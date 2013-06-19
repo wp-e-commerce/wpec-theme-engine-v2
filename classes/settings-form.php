@@ -10,33 +10,26 @@ class WPSC_Settings_Form
 		$this->form_array = $form_array;
 		$this->sections = $sections;
 
-		foreach ( $sections as $section_id => $section_array ) {
+		if ( empty( $this->sections ) ) {
+			$this->sections = array(
+				'default' => array(
+					'title' => '',
+					'fields' => array_keys( $this->form_array ),
+				),
+			);
+		}
+
+		$separator_id = 0;
+		foreach ( $this->sections as $section_id => $section_array ) {
 			add_settings_section( $section_id, $section_array['title'], array( $this, 'callback_section_description' ),  'wpsc-settings' );
 
 			foreach ( $section_array['fields'] as $field_name ) {
-				$field_array =& $this->form_array[$field_name];
-				if ( empty( $field_array['id'] ) )
-					$field_array['id'] = str_replace( '_', '-', $field_name );
-
-				$field_array['internal_name'] = $field_name;
-				$field_array['name'] = 'wpsc_' . $field_name;
-
-				if ( ! array_key_exists( 'label_for', $field_array ) )
-					$field_array['label_for'] = $field_array['id'];
-
-				if ( ! array_key_exists( 'value', $field_array ) )
-					$field_array['value'] = wpsc_get_option( $field_name );
-
-				if ( ! array_key_exists( 'description', $field_array ) )
-					$field_array['description'] = '';
-
-				if ( array_key_exists( 'validation', $field_array ) ) {
-					add_filter( 'sanitize_option_' . $field_array['name'], array( $this, 'validate_field' ), 10, 2 );
-				}
-
-				add_settings_field( $field_array['id'], $field_array['title'], array( $this, 'output_field' ), 'wpsc-settings', $section_id, $field_array );
-				register_setting( 'wpsc-settings', $field_array['name'] );
+				$this->process_field( $field_name );
+				$this->add_settings_field( $field_name, $section_id );
 			}
+
+			$separator_id ++;
+			add_settings_section( 'section_separator_' . $separator_id, '', array( $this, 'callback_section_separator' ), 'wpsc-settings' );
 		}
 
 		// validation rules
@@ -46,6 +39,45 @@ class WPSC_Settings_Form
 		add_filter( 'wpsc_settings_form_output_textfield' , array( $this, 'filter_output_textfield'  ), 10, 2 );
 		add_filter( 'wpsc_settings_form_output_radios'    , array( $this, 'filter_output_radios'     ), 10, 2 );
 		add_filter( 'wpsc_settings_form_output_checkboxes', array( $this, 'filter_output_checkboxes' ), 10, 2 );
+	}
+
+	private function process_field( $field_name ) {
+		$defaults = array(
+			'id' => str_replace( '_', '-', $field_name),
+			'internal_name' => $field_name,
+			'name' => 'wpsc_'. $field_name,
+			'value' => wpsc_get_option( $field_name ),
+			'description' => '',
+			'validation' => '',
+		);
+
+		$this->form_array[$field_name] = wp_parse_args(
+			$this->form_array[$field_name],
+			$defaults
+		);
+
+		$this->form_array[$field_name]['label_for'] = $this->form_array[$field_name]['id'];
+
+		if ( ! empty( $this->form_array[$field_name]['validation'] ) )
+			add_filter(
+				'sanitize_option_' . $field_name,
+				array( $this, 'validate_field' ),
+				10,
+				2
+			);
+	}
+
+	private function add_settings_field( $field_name, $section_id ) {
+		$field_array = $this->form_array[$field_name];
+		add_settings_field(
+			$field_array['id'],
+			$field_array['title'],
+			array( $this, 'output_field' ),
+			'wpsc-settings',
+			$section_id,
+			$field_array
+		);
+		register_setting( 'wpsc-settings', $field_array['name'] );
 	}
 
 	public function filter_validation_rule_required( $valid, $value, $field_name, $field_title, $field_id ) {
@@ -78,9 +110,16 @@ class WPSC_Settings_Form
 
 	public function callback_section_description( $section ) {
 		$section_id = $section['id'];
+		if ( ! array_key_exists( 'description', $this->sections[$section_id] ) )
+			return;
+
 		$description = $this->sections[$section_id]['description'];
 		$description = apply_filters( 'wpsc_' . $section_id . '_description', $description );
 		echo '<p>' . $description . '</p>';
+	}
+
+	public function callback_section_separator( $section ) {
+		submit_button( __( 'Save Changes' ) );
 	}
 
 	public function filter_output_textfield( $output, $field_array ) {
@@ -89,8 +128,17 @@ class WPSC_Settings_Form
 		if ( ! isset( $class ) )
 			$class = 'regular-text wpsc-textfield';
 
-		$output = wpsc_form_input( $name, $value, array( 'id' => $id, 'class' => $class ), false );
-		$output .= '<p class="howto">' . $description_html . '</p>';
+		$output = '';
+		if ( ! empty( $prepend ) )
+			$output .= $prepend;
+
+		$output .= wpsc_form_input( $name, $value, array( 'id' => $id, 'class' => $class ), false );
+
+		if ( ! empty( $append ) )
+			$output .= $append;
+
+		if ( $description )
+			$output .= '<p class="howto">' . $description_html . '</p>';
 
 		return $output;
 	}

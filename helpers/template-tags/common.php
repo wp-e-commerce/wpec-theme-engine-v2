@@ -106,7 +106,7 @@ function wpsc_format_currency( $amt, $args = '' ) {
 }
 
 function wpsc_get_store_title() {
-	return apply_filters( 'wpsc_get_store_title', __( 'Store', 'wpsc' ) );
+	return wpsc_get_option( 'store_title' );
 }
 
 function wpsc_store_title() {
@@ -143,3 +143,50 @@ function wpsc_get_page_slugs() {
 	return $slugs;
 }
 
+function wpsc_get_cart_title() {
+	return wpsc_get_option( 'cart_page_title' );
+}
+
+function wpsc_cart_title() {
+	echo wpsc_get_cart_title();
+}
+
+function wpsc_get_login_title() {
+	return wpsc_get_option( 'login_page_title' );
+}
+
+function wpsc_login_title() {
+	echo wpsc_get_login_title();
+}
+
+function wpsc_get_register_title() {
+	return wpsc_get_option( 'register_page_title' );
+}
+
+function wpsc_register_title() {
+	echo wpsc_get_register_title();
+}
+
+function wpsc_get_password_reminder_title() {
+	return wpsc_get_option( 'password_reminder_page_title' );
+}
+
+function wpsc_password_reminder_title() {
+	echo wpsc_get_password_reminder_title();
+}
+
+function wpsc_get_checkout_title() {
+	return wpsc_get_option( 'checkout_page_title' );
+}
+
+function wpsc_checkout_title() {
+	echo wpsc_get_checkout_title();
+}
+
+function wpsc_get_customer_account_title() {
+	return wpsc_get_option( 'customer_account_page_title' );
+}
+
+function wpsc_customer_account_title() {
+	echo wpsc_get_customer_account_title();
+}

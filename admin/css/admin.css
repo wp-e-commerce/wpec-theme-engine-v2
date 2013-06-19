@@ -1,0 +1,7 @@
+#wpsc-settings-form .button-view-page {
+	margin-left: 5px;
+}
+
+input[id$="-slug"].regular-text {
+	width: auto;
+}
