@@ -19,6 +19,7 @@ class WPSC_Settings_Form
 			);
 		}
 
+		$separator_id = 0;
 		foreach ( $this->sections as $section_id => $section_array ) {
 			add_settings_section( $section_id, $section_array['title'], array( $this, 'callback_section_description' ),  'wpsc-settings' );
 
@@ -26,6 +27,9 @@ class WPSC_Settings_Form
 				$this->process_field( $field_name );
 				$this->add_settings_field( $field_name, $section_id );
 			}
+
+			$separator_id ++;
+			add_settings_section( 'section_separator_' . $separator_id, '', array( $this, 'callback_section_separator' ), 'wpsc-settings' );
 		}
 
 		// validation rules
@@ -109,6 +113,10 @@ class WPSC_Settings_Form
 		$description = $this->sections[$section_id]['description'];
 		$description = apply_filters( 'wpsc_' . $section_id . '_description', $description );
 		echo '<p>' . $description . '</p>';
+	}
+
+	public function callback_section_separator( $section ) {
+		submit_button( __( 'Save Changes' ) );
 	}
 
 	public function filter_output_textfield( $output, $field_array ) {
