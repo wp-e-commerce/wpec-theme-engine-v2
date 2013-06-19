@@ -70,7 +70,7 @@ function wpsc_locate_theme_file( $files ) {
 
 		foreach ( $paths as $path ) {
 			if ( file_exists( $path . '/' . $file ) ) {
-				$located = $path . '/' . $file;
+				$located = realpath( $path . '/' . $file );
 				break 2;
 			}
 		}
@@ -144,7 +144,7 @@ function _wpsc_locate_stuff( $paths, $files, $load = false, $require_once = true
 
 		foreach ( $paths as $path ) {
 			if ( file_exists( $path . '/' . $file ) ) {
-				$located = $path . '/' . $file;
+				$located = realpath( $path . '/' . $file );
 				break 2;
 			}
 		}
