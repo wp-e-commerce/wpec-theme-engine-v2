@@ -120,13 +120,13 @@ class WPSC_Product {
 	private function process_normal_prices() {
 		$this->price = (float) $this->post->_wpsc_price;
 		$this->sale_price = (float) $this->post->_wpsc_special_price;
-		$this->saving = (float) $this->price - $this->sale_price;
-		if ( $this->price )
-			$this->saving_percent = round( $this->saving / $this->price * 100 );
-		else
-			$this->saving_percent = 0;
-		$this->is_on_sale = $this->post->_wpsc_special_price !== ''
+		$this->is_on_sale =    $this->sale_price
 		                    && $this->sale_price < $this->price;
+
+		if ( $this->is_on_sale ) {
+			$this->saving = (float) $this->price - $this->sale_price;
+			$this->saving_percent = round( $this->saving / $this->price * 100 );
+		}
 	}
 
 	private function process_variation_prices() {
@@ -145,7 +145,7 @@ class WPSC_Product {
 			$price = (float) $variation->price;
 
 			$is_variation_on_sale =
-				   $sale_price != ''
+				   $sale_price
 				&& $sale_price < $price;
 
 			$sale_price = (float) $sale_price;
