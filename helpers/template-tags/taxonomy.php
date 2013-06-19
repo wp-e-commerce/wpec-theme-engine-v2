@@ -159,7 +159,6 @@ function wpsc_get_product_tag_name( $term = '' ) {
  * @return [type]
  */
 function wpsc_list_product_categories( $args = '' ) {
-	require_once( WPSC_FILE_PATH . '/wpsc-includes/walker-product-category.class.php' );
 	$defaults = array(
 		'before'             => '<ul class="%s">',
 		'before_description' => '<div class="%s">',
