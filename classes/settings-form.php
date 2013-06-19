@@ -128,8 +128,17 @@ class WPSC_Settings_Form
 		if ( ! isset( $class ) )
 			$class = 'regular-text wpsc-textfield';
 
-		$output = wpsc_form_input( $name, $value, array( 'id' => $id, 'class' => $class ), false );
-		$output .= '<p class="howto">' . $description_html . '</p>';
+		$output = '';
+		if ( ! empty( $prepend ) )
+			$output .= $prepend;
+
+		$output .= wpsc_form_input( $name, $value, array( 'id' => $id, 'class' => $class ), false );
+
+		if ( ! empty( $append ) )
+			$output .= $append;
+
+		if ( $description )
+			$output .= '<p class="howto">' . $description_html . '</p>';
 
 		return $output;
 	}
