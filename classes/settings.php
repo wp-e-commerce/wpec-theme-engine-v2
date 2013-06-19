@@ -31,12 +31,19 @@ class WPSC_Settings
 			'login_page_slug'                   => 'login',
 			'register_page_slug'                => 'register',
 			'password_reminder_page_slug'       => 'password-reminder',
-			'transaction_result_page_slug'      => 'transaction-result',
 			'customer_account_page_slug'        => 'account',
 			'decimal_separator'                 => '.',
 			'thousands_separator'               => ',',
 			'display_pagination'                => 1,
 			'default_style'                     => 1,
+			'store_title' => _x( 'Store', 'main store page title', 'wpsc' ),
+			'cart_page_title' => _x( 'Shopping Cart', 'shopping cart page title', 'wpsc' ),
+			'checkout_page_title' => _x( 'Checkout', 'checkout page title', 'wpsc' ),
+			'transaction_page_title' => _x( 'Transaction Results', 'transaction results page title', 'wpsc' ),
+			'customer_account_page_title' => _x( 'Your Account', 'customer account page title', 'wpsc' ),
+			'login_page_title' => _x( 'Login', 'login page title', 'wpsc' ),
+			'password_reminder_page_title' => _x( 'Reset Password', 'password reminder page title', 'wpsc' ),
+			'register_page_title' => _x( 'Register', 'register page title', 'wpsc' ),
 		);
 	}
 
