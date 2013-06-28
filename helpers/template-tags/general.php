@@ -36,7 +36,7 @@ function wpsc_breadcrumb( $args = '' ) {
  *                         Defaults to true.
  *     'current_text'    - The text for the current link. Defaults to the category / product title.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  apply_filters()      Applies 'wpsc_breadcrumb_array'     filter.
  * @uses  apply_filters()      Applies 'wpsc_breadcrumb_class'     filter.
  * @uses  apply_filters()      Applies 'wpsc_breadcrumb_separator' filter.
@@ -87,6 +87,7 @@ function wpsc_get_breadcrumb( $args = '' ) {
 	$parent = null;
 
 	if ( wpsc_is_single() ) {
+		// if this is a single product, find its product category
 		$pre_current_text   = wpsc_get_product_title();
 		$product_categories = wp_get_object_terms( wpsc_get_product_id(), 'wpsc_product_category' );
 
@@ -100,16 +101,27 @@ function wpsc_get_breadcrumb( $args = '' ) {
 			}
 		}
 	} elseif ( wpsc_is_store() ) {
+		// if this is the main store, default the "current_text" argument to
+		// the store title
+
 		$pre_current_text = wpsc_get_store_title();
 	} elseif ( wpsc_is_product_category() ) {
+		// if this is a product category, find its parent category if it has
+		// one
 		$pre_current_text = wpsc_get_product_category_name();
 		$term             = get_queried_object();
 		if ( $term->parent )
 			$parent = get_term( $term->parent, 'wpsc_product_category' );
 	} elseif ( wpsc_is_product_tag() ) {
+		// if this is a product tag, set "current_text" to the tag name by default
 		$pre_current_text = wpsc_get_product_tag_name();
 	} elseif ( wpsc_is_customer_account() ) {
+		// if this is the customer account page
+
 		$c = _wpsc_get_current_controller();
+
+		// if we're displaying an order's details, set the parent to the
+		// "Your Account" page
 		if ( $c->order_id ) {
 			$pre_current_text = $c->order_id;
 			$parent = array(
@@ -119,6 +131,7 @@ function wpsc_get_breadcrumb( $args = '' ) {
 				),
 			);
 		} else {
+			// otherwise, set the "current_text" argument to "Your Account"
 			$pre_current_text = __( 'Your Account', 'wpsc' );
 		}
 	}
@@ -152,10 +165,12 @@ function wpsc_get_breadcrumb( $args = '' ) {
 	$r = array_merge( $defaults, $args );
 	extract( $r );
 
+	// replace placeholders in arguments
 	$before         = sprintf( $before        , 'wpsc-breadcrumb'         );
 	$before_item    = sprintf( $before_item   , 'wpsc-breadcrumb-item'    );
 	$before_divider = sprintf( $before_divider, 'wpsc-breadcrumb-divider' );
 
+	// if padding is set, prepare the length, padding string and divider
 	if ( $padding ) {
 		$length = strlen( $divider ) + $padding * 2;
 		$padding = str_repeat( "&nbsp;", $padding );
@@ -163,22 +178,30 @@ function wpsc_get_breadcrumb( $args = '' ) {
 	}
 	$divider        = $before_divider . $divider . $after_divider;
 
+	// generate the breadcrumb array in reverse
 	$breadcrumbs = array();
 
+	// include current page in breadcrumb
 	if ( $include_current && ! empty( $current_text ) ) {
 		$before_current_item = sprintf( $before_item, 'wpsc-breadcrumb-item wpsc-breadcrumb-current' );
 		$breadcrumbs[] = $before_current_item . $current_text . $after_item;
 	}
 
+	// include ancestors in breadcrumb
 	$ancestors = array();
+
+	// if the current page has a parent
 	if ( $parent ) {
 		if ( is_array( $parent ) ) {
+			// if $parent is an array, then use the 'url' and 'title' elements
 			foreach ( $parent as $p ) {
 				$before_this_item = sprintf( $before_item, 'wpsc-breadcrumb-item wpsc-breadcrumb-ancestor' );
 				$link = '<a href="' . esc_url( $p['url'] ) . '">' . esc_html( $p['title'] ) . '</a>';
 				$breadcrumbs[] = $before_this_item . $link . $divider . $after_item;
 			}
 		} else {
+			// if $parent is a term object, recursively find all ancestors and
+			// include them in the breadcrumb array
 			while ( ! is_wp_error( $parent ) && is_object( $parent ) ) {
 				if ( in_array( $parent->parent, $ancestors ) )
 					break;
@@ -192,18 +215,21 @@ function wpsc_get_breadcrumb( $args = '' ) {
 		}
 	}
 
+	// include the store link if this is not the main store itself
 	if ( $include_store && ! empty( $store_text ) && ! wpsc_is_store() ) {
 		$before_this_item = sprintf( $before_item, 'wpsc-breadcrumb-item wpsc-breadcrumb-store' );
 		$link = '<a href="' . wpsc_get_store_url() . '">' . $store_text . '</a>';
 		$breadcrumbs[] = $before_this_item . $link . $divider . $after_item;
 	}
 
-	if ( $include_home && ! empty( $home_text ) && ! is_home() ) {
+	// include the home link
+	if ( $include_home && ! empty( $home_text ) && ! is_home() && ! wpsc_get_option( 'store_as_front_page' ) ) {
 		$before_this_item = sprintf( $before_item, 'wpsc-breadcrumb-item wpsc-breadcrumb-home' );
 		$link = '<a href="' . trailingslashit( home_url() ) . '">' . $home_text . '</a>';
 		$breadcrumbs[] = $before_this_item . $link . $divider . $after_item;
 	}
 
+	// reverse the breadcrumb array
 	$breadcrumbs = apply_filters( 'wpsc_breadcrumb_array', array_reverse( $breadcrumbs ), $r );
 	$html        = $before . implode( '', $breadcrumbs ) . $after;
 

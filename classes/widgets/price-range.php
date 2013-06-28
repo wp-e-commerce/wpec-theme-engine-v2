@@ -19,7 +19,7 @@ class WPSC_Widget_Price_Range extends WP_Widget {
 		add_filter( 'wpsc_register_post_types_products_args', array( $this, '_action_init_permalinks' ), 99 );
 		add_filter( 'query_vars', array( $this, '_filter_query_vars' ) );
 
-		add_action( 'pre_get_posts', array( $this, '_action_pre_get_posts' ), 1, 1 );
+		add_action( 'pre_get_posts', array( $this, '_action_pre_get_posts' ), 2, 1 );
 	}
 
 	public function _action_pre_get_posts( $query ) {

@@ -113,9 +113,23 @@ function wpsc_store_title() {
 	echo wpsc_get_store_title();
 }
 
+/**
+ * Get the slugs of WP e-Commerce related pages
+ *
+ * @access public
+ * @since  0.1
+ *
+ * @return array Array of "page name" => "slug"
+ */
 function wpsc_get_page_slugs() {
+	// get main store slug
 	$store_slug = wpsc_get_option( 'store_slug' );
 
+	// if main store is not displayed as front page, append it with slash
+	if ( $store_slug )
+		$store_slug .= '/';
+
+	// names of pages
 	$pages = array(
 		'cart',
 		'checkout',
@@ -123,6 +137,7 @@ function wpsc_get_page_slugs() {
 		'customer-account',
 	);
 
+	// if users can register, make these pages available too
 	if ( get_option( 'users_can_register' ) ) {
 		$pages = array_merge( $pages, array(
 			'login',
@@ -133,11 +148,12 @@ function wpsc_get_page_slugs() {
 
 	$slugs = array();
 
+	// fetch the slugs corresponding to each page's name
 	foreach ( $pages as $key => $page ) {
 		$option = str_replace( '-', '_', $page ) . '_page_slug';
 		$slug = wpsc_get_option( $option );
 		if ( ! empty( $slug ) )
-			$slugs[$page] = $store_slug . '/' . $slug;
+			$slugs[$page] = $store_slug . $slug;
 	}
 
 	return $slugs;

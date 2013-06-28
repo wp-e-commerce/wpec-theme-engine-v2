@@ -51,17 +51,25 @@ final class WPSC_Shipping_Calculator {
 		return $this->$name;
 	}
 
+	/**
+	 * Constructor for shipping calculator object for a particular purchase log
+	 *
+	 * @param int|WPSC_Purchase_Log $purchase_log Purchase log ID or object. Optional. Default to purchase log of the current customer session
+	 */
 	public function __construct( $purchase_log = false ) {
+		// get active shipping modules
 		$this->modules = get_option( 'custom_shipping_options' );
 
+		// default to current session's purchase log if called with no argument
 		if ( empty( $purchase_log ) ) {
 			$purchase_log = (int) wpsc_get_customer_meta( 'current_purchase_log_id' );
 			if ( ! $purchase_log )
 				return;
 		}
 
-		if ( is_int( $purchase_log ) )
-			$purchase_log = new WPSC_Purchase_Log( $purchase_log );
+		// in case of integer argument, initialize the purchase log object
+		if ( ! is_object( $purchase_log ) )
+			$purchase_log = new WPSC_Purchase_Log( absint( $purchase_log ) );
 
 		$this->purchase_log = $purchase_log;
 	}

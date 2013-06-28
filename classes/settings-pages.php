@@ -27,8 +27,16 @@ class WPSC_Settings_Tab_Pages extends _WPSC_Settings_Tab_Form
 		parent::display();
 	}
 
+	/**
+	 * Generate the form configuration array for this tab
+	 *
+	 * @since  0.1
+	 * @access private
+	 */
 	private function populate_form_array() {
+		// define the sections
 		$this->sections = array(
+			// Locations and Slugs of pages
 			'locations' => array(
 				'title' => _x(
 					'Page Slugs',
@@ -37,6 +45,7 @@ class WPSC_Settings_Tab_Pages extends _WPSC_Settings_Tab_Form
 				),
 				'fields' => array(
 					'store_slug',
+					'store_as_front_page',
 					'category_base_slug',
 					'product_base_slug',
 					'cart_page_slug',
@@ -49,6 +58,8 @@ class WPSC_Settings_Tab_Pages extends _WPSC_Settings_Tab_Form
 					'hierarchical_product_category_url',
 				),
 			),
+
+			// Page Titles
 			'titles' => array(
 				'title' => _x(
 					'Page Titles',
@@ -67,16 +78,20 @@ class WPSC_Settings_Tab_Pages extends _WPSC_Settings_Tab_Form
 			),
 		);
 
+		// Shortcut variables for buttons and messages
 		$view_button = '<a class="button button-secondary button-view-page" href="%1$s">%2$s</a>';
 		$view_message = _x( 'View', 'view page', 'wpsc' );
 		$view_category_message = _x( 'Sample Category', 'view page', 'wpsc' );
 		$view_product_message = _x( 'Sample Product', 'view page', 'wpsc' );
 
+		// generate sample URLs for single product and product category
 		$base_shop_url      = '<small>' . esc_url( wpsc_get_store_url( '/' ) ) . '</small>';
 		$sample_category    = get_terms( 'wpsc_product_category', array( 'number' => 1 ) );
 		$sample_product     = get_posts( array(	'post_type' => 'wpsc-product', 'numberposts' => 1 ) );
 
+		// generate form fields
 		$this->form_array = array(
+			// Slug for the main store
 			'store_slug' => array(
 				'type'    => 'textfield',
 				'prepend' => '<small>' . esc_url( home_url( '/' ) ) . '</small>',
@@ -93,11 +108,25 @@ class WPSC_Settings_Tab_Pages extends _WPSC_Settings_Tab_Form
 				'validation' => 'required',
 				'class' => 'regular-text code',
 			),
+
+			// Whether to display the store as front page
+			'store_as_front_page' => array(
+				'type' => 'radios',
+				'title' => 'Display main store on front page',
+				'options' => array(
+					1 => 'Yes',
+					0 => 'No'
+				),
+			),
+
+			// Store title
 			'store_title' => array(
 				'type'  => 'textfield',
 				'title' => _x( 'Main store title', 'page slug title', 'wpsc' ),
 				'validation' => 'required',
 			),
+
+			// Base slug for product category
 			'category_base_slug' => array(
 				'type'        => 'textfield',
 				'prepend'     => $base_shop_url,
@@ -116,6 +145,8 @@ class WPSC_Settings_Tab_Pages extends _WPSC_Settings_Tab_Form
 				'validation'  => 'required',
 				'class' => 'regular-text code',
 			),
+
+			// Base slug for single product pages
 			'product_base_slug' => array(
 				'type'        => 'textfield',
 				'prepend'     => $base_shop_url,
@@ -134,6 +165,8 @@ class WPSC_Settings_Tab_Pages extends _WPSC_Settings_Tab_Form
 				'validation'  => 'required',
 				'class' => 'regular-text code',
 			),
+
+			// Whether to include category slug in product permalinks
 			'prefix_product_slug' => array(
 				'type'    => 'checkboxes',
 				'title'   => _x( 'Product prefix', 'permalinks setting', 'wpsc' ),
@@ -144,6 +177,8 @@ class WPSC_Settings_Tab_Pages extends _WPSC_Settings_Tab_Form
 					)
 				),
 			),
+
+			// Hierarchical product category URL
 			'hierarchical_product_category_url' => array(
 				'type'    => 'radios',
 				'title'   => _x(
@@ -168,6 +203,8 @@ class WPSC_Settings_Tab_Pages extends _WPSC_Settings_Tab_Form
 					'wpsc'
 				),
 			),
+
+			// Slug for cart page
 			'cart_page_slug' => array(
 				'type'        => 'textfield',
 				'prepend'     => $base_shop_url,
@@ -180,11 +217,15 @@ class WPSC_Settings_Tab_Pages extends _WPSC_Settings_Tab_Form
 				'validation'  => 'required',
 				'class' => 'regular-text code',
 			),
+
+			// Cart page title
 			'cart_page_title' => array(
 				'type'        => 'textfield',
 				'title'       => _x( 'Cart page', 'page settings', 'wpsc' ),
 				'validation'  => 'required',
 			),
+
+			// Slug for checkout page
 			'checkout_page_slug' => array(
 				'type'        => 'textfield',
 				'prepend'     => $base_shop_url,
@@ -192,11 +233,15 @@ class WPSC_Settings_Tab_Pages extends _WPSC_Settings_Tab_Form
 				'validation'  => 'required',
 				'class' => 'regular-text code',
 			),
+
+			// Checkout page title
 			'checkout_page_title' => array(
 				'type' => 'textfield',
 				'title' => _x( 'Checkout page', 'page settings', 'wpsc' ),
 				'validation' => 'required',
 			),
+
+			// Slug for customer account page
 			'customer_account_page_slug' => array(
 				'type'        => 'textfield',
 				'prepend'     => $base_shop_url,
@@ -209,11 +254,15 @@ class WPSC_Settings_Tab_Pages extends _WPSC_Settings_Tab_Form
 				'validation'  => 'required|slug_not_conflicted',
 				'class' => 'regular-text code',
 			),
+
+			// Customer account page title
 			'customer_account_page_title' => array(
 				'type' => 'textfield',
 				'title' => _x( 'Customer account page', 'page settings', 'wpsc' ),
 				'validation' => 'required',
 			),
+
+			// Slug for login page
 			'login_page_slug' => array(
 				'type'        => 'textfield',
 				'prepend'     => $base_shop_url,
@@ -222,11 +271,15 @@ class WPSC_Settings_Tab_Pages extends _WPSC_Settings_Tab_Form
 				'validation'  => 'slug_not_conflicted',
 				'class' => 'regular-text code',
 			),
+
+			// Login page title
 			'login_page_title' => array(
 				'type' => 'textfield',
 				'title' => _x( 'Login page', 'page settings', 'wpsc' ),
 				'validation' => 'required',
 			),
+
+			// Slug for password reminder
 			'password_reminder_page_slug' => array(
 				'type'        => 'textfield',
 				'prepend'     => $base_shop_url,
@@ -235,11 +288,15 @@ class WPSC_Settings_Tab_Pages extends _WPSC_Settings_Tab_Form
 				'validation'  => 'slug_not_conflicted',
 				'class' => 'regular-text code',
 			),
+
+			// Title for password reminder page
 			'password_reminder_page_title' => array(
 				'type' => 'textfield',
 				'title' => _x( 'Password reminder page', 'page settings', 'wpsc' ),
 				'validation' => 'required',
 			),
+
+			// Slug for register page
 			'register_page_slug' => array(
 				'type'        => 'textfield',
 				'prepend'     => $base_shop_url,
@@ -248,6 +305,8 @@ class WPSC_Settings_Tab_Pages extends _WPSC_Settings_Tab_Form
 				'validation'  => 'slug_not_conflicted',
 				'class' => 'regular-text code',
 			),
+
+			// Register page title
 			'register_page_title' => array(
 				'type' => 'textfield',
 				'title' => _x( 'Register page', 'page settings', 'wpsc' ),
@@ -255,6 +314,8 @@ class WPSC_Settings_Tab_Pages extends _WPSC_Settings_Tab_Form
 			),
 		);
 
+		// display warnings for login, register and password reminder pages when
+		// "Anyone can register" is disabled.
 		if ( ! get_option( 'users_can_register' ) ) {
 			$additional_description = '<br /> ' . __( '<strong>Note:</strong> Enable "Anyone can register" in <a href="%s">Settings -> General</a> first if you want to use this page.', 'wpsc' );
 			$additional_description = sprintf( $additional_description, admin_url( 'options-general.php' ) );

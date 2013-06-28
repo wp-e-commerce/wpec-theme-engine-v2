@@ -29,27 +29,39 @@
 /**
  * Determine whether the current page is the product main store page
  *
- * @since 4.0
+ * @since 0.1
  * @uses  is_post_type_archive()
  *
  * @return bool
  */
- function wpsc_is_store() {
- 	return is_post_type_archive( 'wpsc-product' );
- }
+function wpsc_is_store() {
+	return is_post_type_archive( 'wpsc-product' );
+}
+
+/**
+ * Determine whether the current page is the root page (i.e. 'home_url') and
+ * the main store is set to display here.
+ *
+ * @since  0.1
+ * @return bool
+ */
+function wpsc_is_store_front_page() {
+ 	global $wp_query;
+ 	return $wp_query->wpsc_is_store_front_page;
+}
 
 /**
  * Determine whether the current page is a product category archive page.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  is_tax()
  *
  * @param  mixed $cat Optional. Category ID, name, slug or an array of such.
  * @return bool
  */
- function wpsc_is_product_category( $cat = '' ) {
- 	return is_tax( 'wpsc_product_category', $cat );
- }
+function wpsc_is_product_category( $cat = '' ) {
+	return is_tax( 'wpsc_product_category', $cat );
+}
 
 /**
  * Determine whether the current page is a product tag archive page.

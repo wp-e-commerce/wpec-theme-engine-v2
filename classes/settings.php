@@ -19,6 +19,7 @@ class WPSC_Settings
 	private function __construct() {
 		$this->default_settings = array(
 			'store_slug'                        => 'store',
+			'store_as_front_page'               => 0,
 			'crop_thumbnails'                   => 0,
 			'default_category'                  => 'all',
 			'product_base_slug'                 => 'product',

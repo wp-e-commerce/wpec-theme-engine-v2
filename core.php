@@ -43,14 +43,34 @@ function _wpsc_te_v2_includes() {
 	add_filter( 'rewrite_rules_array', '_wpsc_filter_rewrite_controller_slugs' );
 }
 
+/**
+ * Modify wpsc-product post type arguments to make store slug works as the
+ * post type archive and base slug of everything else related to WPEC
+ *
+ * Filter hook: wpsc_register_post_types_products_args
+ * @since  0.1
+ * @access private
+ * @param  array $args Post type arguments
+ * @return array       Modified post type arguments
+ */
 function _wpsc_te_v2_product_post_type_args( $args ) {
-	$store_slug = wpsc_get_option( 'store_slug' );
+	// get the base slug
+	$archive_slug = $store_slug = wpsc_get_option( 'store_slug' );
 
-	$product_slug = $store_slug . '/' . wpsc_get_option( 'product_base_slug' );
+	// set the base slug to '/' in case it is set to be displayed as the front
+	// page ('has_archive' has to be set to a non-empty value)
+	if ( ! $store_slug )
+		$archive_slug = '/';
+
+	// get single product base slug
+	$product_slug = $store_slug . wpsc_get_option( 'product_base_slug' );
+
+	// include product category as well if user wants to
 	if ( wpsc_get_option( 'prefix_product_slug' ) )
 		$product_slug .= '/%wpsc_product_category%';
 
-	$args['has_archive'] = $store_slug;
+	// modify the args
+	$args['has_archive'] = $archive_slug;
 	$args['rewrite']['slug'] = $product_slug;
 
 	return $args;

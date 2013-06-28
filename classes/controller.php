@@ -77,9 +77,20 @@ class WPSC_Controller {
 		return $comments;
 	}
 
+	/**
+	 * Reset the global variables before the template is included so that our
+	 * controller is displayed correctly within page.php template
+	 *
+	 * The purpose is to fool WordPress themes into thinking the WPEC controller
+	 * is a proper WordPress page.
+	 *
+	 * @access private
+	 * @since  0.1
+	 */
 	private function reset_globals() {
 		global $wp_query, $wp_the_query;
 
+		// default values for the global $post object
 		$reset_post = array(
 			'ID'              => 0,
 			'post_title'      => $this->title,
@@ -95,6 +106,7 @@ class WPSC_Controller {
 			'comment_count'   => 0,
 		);
 
+		// default values for the global $wp_query object
 		$reset_wp_query = array(
 			'post_count'      => 1,
 			'is_404'          => false,
@@ -107,7 +119,8 @@ class WPSC_Controller {
 			'comment_count'   => 0,
 		);
 
-		// Default for current post
+		// in case a single product is being displayed, use the corresponding
+		// post attributes
 		if ( isset( $wp_query->post ) && is_singular() ) {
 			$post_id = $wp_query->post->ID;
 			$reset_post = array_merge( $reset_post, array(
@@ -122,10 +135,19 @@ class WPSC_Controller {
 			);
 		}
 
+		// fool page.php into thinking this controller is a proper page
 		$queried_object = $reset_post;
-		if ( is_post_type_archive( 'wpsc-product' ) )
+
+		// in case of the main store, the queried object should be the post
+		// type object as this is a product archive
+		if (
+			is_post_type_archive( 'wpsc-product' )
+			|| ( is_home() && wpsc_get_option( 'store_as_front_page' ) )
+		)
 			$queried_object = get_post_type_object( 'wpsc-product' );
 
+		// store the $wp_query away before butchering it, this will be restored
+		// later
 		$this->main_query = unserialize( serialize( $wp_query ) );
 
 		// Clear out the post related globals
@@ -134,7 +156,7 @@ class WPSC_Controller {
 		$wp_query->queried_object_id = 0;
 		$wp_query->posts = array( $wp_query->post );
 
-		// Prevent comments form from appearing
+		// Reset $wp_query flags
 		foreach ( $reset_wp_query as $flag => $value ) {
 			$wp_query->$flag = $value;
 		}
