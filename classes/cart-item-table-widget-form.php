@@ -24,7 +24,7 @@ class WPSC_Cart_Item_Table_Widget_Form extends WPSC_Cart_Item_Table_Form {
 	protected function after_table() {
 ?>
 	<div class="wpsc-form-actions bottom">
-		<?php wpsc_form_button( '', __( 'Go to Checkout', 'wpsc' ), array( 'class' => 'wpsc-button wpsc-button-primary', 'icon' => array( 'white', 'ok-sign' ) ) ); ?>
+		<?php wpsc_begin_checkout_button(); ?>
 		<?php wpsc_form_hidden( '_wp_nonce', wp_create_nonce( 'wpsc-cart-update' ) ); ?>
 	</div>
 </form>

@@ -275,11 +275,39 @@ function wpsc_get_user_messages( $args = '' ) {
 	return $output;
 }
 
+/**
+ * Return the HTML for the Keep Shopping button
+ *
+ * @since  0.1
+ * @return string HTML output
+ */
+function wpsc_get_keep_shopping_button() {
+	$keep_shopping_url =   isset( $_REQUEST['_wp_http_referer'] )
+	                     ? esc_attr( $_REQUEST['_wp_http_referer'] )
+	                     : wpsc_get_store_url();
+
+	$title = apply_filters(
+		'wpsc_keep_shopping_button_title',
+		__( 'Keep Shopping', 'wpsc' )
+	);
+
+	$button = sprintf(
+		'<a class="wpsc-button wpsc-keep-shopping-button" href="%1$s">%2$s</a>',
+		esc_url( $keep_shopping_url ),
+		$title
+	);
+
+	return apply_filters( 'wpsc_get_keep_shopping_button', $button );
+}
+
+/**
+ * Display the "Keep Shopping" button
+ *
+ * @since  0.1
+ * @uses wpsc_get_keep_shopping_button()
+ */
 function wpsc_keep_shopping_button() {
-	$keep_shopping_url = isset( $_REQUEST['_wp_http_referer'] ) ? esc_attr( $_REQUEST['_wp_http_referer'] ) : wpsc_get_store_url();
-	?>
-	<a class="wpsc-button wpsc-back-to-shopping" href="<?php echo esc_url( $keep_shopping_url ); ?>"><?php esc_html_e( 'Keep Shopping', 'wpsc' ); ?></a>
-	<?php
+	echo wpsc_get_keep_shopping_button();
 }
 
 function wpsc_checkout_steps() {

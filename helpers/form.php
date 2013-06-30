@@ -231,13 +231,32 @@ function _wpsc_get_field_description( $field, $args ) {
 	return $output;
 }
 
+/**
+ * Add "Copy billing details" to the shipping form header.
+ *
+ * @since  0.1
+ * @access private
+ *
+ * @uses   get_option()   Get 'shippingsameasbilling' option
+ * @uses   apply_filters() Applies 'wpsc_copy_billing_details_button_title' filter
+ * @uses   apply_filters() Applies 'wpsc_copy_billing_details_button' filter
+ * @param  string $output HTML output of the heading field
+ * @param  array $field  field arguments
+ * @param  array $args   form arguments
+ * @return string        HTML output for the heading
+ */
 function _wpsc_filter_control_heading( $output, $field, $args ) {
 	$output .= sprintf( '<strong>%s</strong>', $field['title'] );
 	if (
 		   get_option( 'shippingsameasbilling', 0 )
 		&& ! empty( $field['shipping_heading'] )
 	) {
-		$output .= wpsc_form_input(
+		$title = apply_filters(
+			'wpsc_copy_billing_details_button_title',
+			__( 'Copy billing details', 'wpsc' )
+		);
+
+		$button = wpsc_form_input(
 			'wpsc_copy_billing_details',
 			__( 'Copy billing details', 'wpsc' ),
 			array(
@@ -246,7 +265,12 @@ function _wpsc_filter_control_heading( $output, $field, $args ) {
 			),
 			false
 		);
+
+		$button = apply_filters( 'wpsc_copy_billing_details_button', $button );
+
+		$output .= $button;
 	}
+
 	return $output;
 }
 
@@ -698,6 +722,21 @@ function wpsc_form_hidden( $name, $value, $atts = array(), $echo = true ) {
 	return _wpsc_input_type_field( $atts, $echo );
 }
 
+/**
+ * Get the HTML output of or display a button.
+ *
+ * Use the third argument to output additional HTML attributes. There's one
+ * special attribute called 'icon' which will generate an icon for the button if
+ * default styling is enabled.
+ *
+ * @since  0.1
+ *
+ * @param  string  $name  Name of button, can be empty
+ * @param  string  $title Button title, must be already escaped
+ * @param  array   $args  Additional arguments
+ * @param  boolean $echo  Whether to echo the HTML output
+ * @return string|void    Return the HTML output if $echo is set to false
+ */
 function wpsc_form_button( $name, $title, $args = array(), $echo = true ) {
 	if ( ! is_array( $args ) )
 		$args = array();

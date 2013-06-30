@@ -1,14 +1,35 @@
 <?php
 
+/**
+ * Return the array containing arguments to generate the "Add to cart" form.
+ *
+ * The returned array can then be used with {@link wpsc_get_form_output()} to
+ * generate the HTML output.
+ *
+ * @since  0.1
+ * @uses   apply_filters() Applies 'wpsc_add_to_cart_button_icon' filter. Set the value to an empty value to disable the icon
+ * @uses   apply_filters() Applies 'wpsc_add_to_cart_button_title' filter. The return value must be escaped already.
+ * @uses   apply_filters() Applies 'wpsc_get_add_to_cart_form_args' filter. Use this filter to add more fields
+ * @uses   wpsc_get_product_id() Get current product ID in the loop
+ * @uses   wpsc_get_cart_url() Get cart URL for the form action
+ * @uses   WPSC_Product::get_instance() get the WPSC_Product object to fetch variation sets and terms
+ *
+ * @param  int   $id Optional. Product ID. Defaults to the current product in the loop.
+ * @return array     Form argument array
+ */
 function wpsc_get_add_to_cart_form_args( $id = null ) {
 	if ( ! $id )
 		$id = wpsc_get_product_id();
 
 	$args = array(
+		// attributes of the form
 		'class'  => 'wpsc-form wpsc-form-horizontal wpsc-add-to-cart-form',
 		'action' => wpsc_get_cart_url( "add/{$id}" ),
 		'id'     => "wpsc-add-to-cart-form-{$id}",
+
+		// array containing form fields
 		'fields' => array(
+			// quantity field
 			array(
 				'name'  => 'quantity',
 				'type'  => 'textfield',
@@ -18,6 +39,7 @@ function wpsc_get_add_to_cart_form_args( $id = null ) {
 		),
 	);
 
+	// generate the variation dropdown menus
 	$product = WPSC_Product::get_instance( $id );
 
 	foreach ( $product->variation_sets as $variation_set_id => $title ) {
@@ -30,18 +52,30 @@ function wpsc_get_add_to_cart_form_args( $id = null ) {
 		);
 	}
 
+	// form action section contains the button and hidden values
 	$args['form_actions'] = array(
+		// Add to Cart button
 		array(
 			'type' => 'button',
 			'primary' => true,
-			'icon'    => array( 'shopping-cart', 'white' ),
-			'title'   => apply_filters( 'wpsc_add_to_cart_button_title', __( 'Add to Cart', 'wpsc' ) ),
+			'icon'    => apply_filters(
+				'wpsc_add_to_cart_button_icon',
+				array( 'shopping-cart', 'white' )
+			),
+			'title'   => apply_filters(
+				'wpsc_add_to_cart_button_title',
+				__( 'Add to Cart', 'wpsc' )
+			),
 		),
+
+		// set the current page as the referer so that user can be redirected back
 		array(
 			'type'    => 'hidden',
 			'name'    => '_wp_http_referer',
 			'value'   => home_url( $_SERVER['REQUEST_URI'] ),
 		),
+
+		// nonce
 		array(
 			'type'    => 'hidden',
 			'name'    => '_wp_nonce',
@@ -54,6 +88,16 @@ function wpsc_get_add_to_cart_form_args( $id = null ) {
 	return $args;
 }
 
+/**
+ * Return the HTML output of the "Add to cart" form.
+ *
+ * @since  0.1
+ * @uses apply_filters() Applies 'wpsc_get_add_to_cart_form()'. Use this filter to add or modify the HTML output of this function.
+ * @uses wpsc_get_product_id() Get the current product ID in the loop
+ * @uses wpsc_get_add_to_cart_form_args() Get the form arguments for this product
+ * @param  int $id Optional. Product ID. Defaults to the current product ID in the loop.
+ * @return string HTML output
+ */
 function wpsc_get_add_to_cart_form( $id = null ) {
 	if ( ! $id )
 		$id = wpsc_get_product_id();
@@ -62,6 +106,13 @@ function wpsc_get_add_to_cart_form( $id = null ) {
 	return apply_filters( 'wpsc_get_add_to_cart_form', wpsc_get_form_output( $args ) );
 }
 
+/**
+ * Echo the HTML output for the Add to cart form
+ *
+ * @since  0.1
+ * @uses   wpsc_get_add_to_cart_form() Get the HTML for the form
+ * @param  int $id Optional. Product ID. Defaults to the current product in the loop
+ */
 function wpsc_add_to_cart_form( $id = null ) {
 	echo wpsc_get_add_to_cart_form( $id );
 }
@@ -641,4 +692,58 @@ function wpsc_get_checkout_payment_method_form() {
 
 function wpsc_checkout_payment_method_form() {
 	echo wpsc_get_checkout_payment_method_form();
+}
+
+/**
+ * Return the HTML for "Begin Checkout" button
+ *
+ * @since  0.1
+ *
+ * @uses   apply_filters() Applies 'wpsc_begin_checkout_button_title'
+ * @uses   apply_filters() Applies 'wpsc_begin_checkout_button_icon'
+ * @uses   apply_filters() Applies 'wpsc_begin_checkout_button_args'
+ * @uses   apply_filters() Applies 'wpsc_begin_checkout_button'
+ *
+ * @return string HTML Output
+ */
+function wpsc_get_begin_checkout_button() {
+	$title = apply_filters(
+		'wpsc_begin_checkout_button_title',
+		__( 'Begin Checkout', 'wpsc' )
+	);
+
+	$icon = apply_filters(
+		'wpsc_begin_checkout_button_icon',
+		array( 'white', 'ok-sign' )
+	);
+
+	$args = apply_filters(
+		'wpsc_begin_checkout_button_args',
+		array(
+			'class' => 'wpsc-button wpsc-button-primary',
+			'icon'  => $icon,
+		)
+	);
+
+	$button = apply_filters(
+		'wpsc_begin_checkout_button',
+		wpsc_form_button(
+			'',
+			$title,
+			$args,
+			false
+		)
+	);
+
+	return $button;
+}
+
+/**
+ * Display the "Begin Checkout" button
+ *
+ * @since  0.1
+ * @uses wpsc_get_begin_checkout_button()
+ */
+function wpsc_begin_checkout_button() {
+	echo wpsc_get_begin_checkout_button();
 }

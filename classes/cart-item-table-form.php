@@ -21,7 +21,7 @@ class WPSC_Cart_Item_Table_Form extends WPSC_Cart_Item_Table {
 <form class="wpsc-form wpsc-cart-form" action="<?php echo esc_url( wpsc_get_cart_url() ); ?>" method="post">
 	<div class="wpsc-form-actions top">
 		<?php wpsc_keep_shopping_button(); ?>
-		<?php wpsc_form_button( '', __( 'Begin Checkout', 'wpsc' ), array( 'class' => 'wpsc-button wpsc-button-primary', 'icon' => array( 'white', 'ok-sign' ) ) ); ?>
+		<?php wpsc_begin_checkout_button(); ?>
 		<?php wpsc_form_hidden( '_wp_nonce', wp_create_nonce( 'wpsc-cart-update' ) ); ?>
 	</div>
 <?php
@@ -32,7 +32,7 @@ class WPSC_Cart_Item_Table_Form extends WPSC_Cart_Item_Table {
 ?>
 	<div class="wpsc-form-actions bottom">
 		<?php wpsc_keep_shopping_button(); ?>
-		<?php wpsc_form_button( '', __( 'Begin Checkout', 'wpsc' ), array( 'class' => 'wpsc-button wpsc-button-primary', 'icon' => array( 'white', 'ok-sign' ) ) ); ?>
+		<?php wpsc_begin_checkout_button(); ?>
 		<?php wpsc_form_hidden( '_wp_nonce', wp_create_nonce( 'wpsc-cart-update' ) ); ?>
 	</div>
 	<?php parent::after_table(); ?>
