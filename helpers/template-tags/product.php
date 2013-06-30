@@ -336,14 +336,17 @@ function wpsc_get_product_thumbnail_id( $product_id = null ) {
  * Return the HTML of a product's featured thumbnail.
  *
  * Note that the $size argument of this function is different from that of get_the_post_thumbnail().
- * For this function, you can only use these three sizes that correspond to the sizes specified in
- * your Settings -> Store -> Presentation option page:
+ *
+ * This function works similarly to get_the_post_thumbnail(), except the $size argument takes the
+ * following shortcut values corresponding to the options in Settings->Store->Presentation:
  *     'single'   - corresponds to "Single Product Image Size" option.
  *     'archive'  - corresponds to "Default Product Thumbnail Size" option.
  *     'taxonomy' - corresponds to "Default Product Group Thumbnail Size" option.
+ *     'cart'     - corresponds to the cart product thumbnail size option.
  *
  * @see   wpsc_check_thumbnail_support() Where the thumbnail sizes are registered.
- * @since 4.0
+ * @since 0.1
+ *
  * @uses  $_wp_additional_image_sizes The array holding registered thumbnail sizes.
  * @uses  get_attached_file()
  * @uses  get_post_meta()
@@ -373,29 +376,39 @@ function wpsc_get_product_thumbnail( $id = null, $size = false, $attr = '' ) {
 			$size = 'cart';
 		elseif ( is_singular( 'wpsc-product' ) )
 			$size = 'single';
-		else
+		elseif ( is_post_type_archive( 'wpsc-product' ) )
 			$size = 'archive';
+		else
+			$size = 'full';
 	}
 
-	$wp_size = 'wpsc_product_' . $size . '_thumbnail';
+	$wpec_sizes = array(
+		'cart', 'single', 'archive', 'taxonomy'
+	);
 
-	if ( wpsc_has_product_thumbnail( $id ) ) {
-		$thumb_id = wpsc_get_product_thumbnail_id( $id );
+	$wp_size = $size;
 
-		// Get the size metadata registered in wpsc_check_thumbnail_support()
-		$size_metadata = $_wp_additional_image_sizes[$wp_size];
+	if ( in_array( $size, $wpec_sizes ) ) {
+		$wp_size = 'wpsc_product_' . $size . '_thumbnail';
 
-		// Get the current size metadata that has been generated for this product
-		// This metadata is generated in {@link _wpsc_filter_generate_attachment_metadata()}
-		$current_size_metadata = get_post_meta( $thumb_id, '_wpsc_generated_sizes', true );
+		if ( wpsc_has_product_thumbnail( $id ) ) {
+			$thumb_id = wpsc_get_product_thumbnail_id( $id );
 
-		if ( empty( $current_size_metadata ) )
-			$current_size_metadata = array();
+			// Get the size metadata registered in wpsc_check_thumbnail_support()
+			$size_metadata = $_wp_additional_image_sizes[$wp_size];
 
-		// If this thumbnail for the current size was not generated yet, or generated with different
-		// parameters (crop, for example), we need to regenerate the thumbnail
-		if ( ! array_key_exists( $size, $current_size_metadata ) || $current_size_metadata[$size] != $size_metadata ) {
-			_wpsc_regenerate_thumbnail_size( $thumb_id, $wp_size );
+			// Get the current size metadata that has been generated for this product
+			// This metadata is generated in {@link _wpsc_filter_generate_attachment_metadata()}
+			$current_size_metadata = get_post_meta( $thumb_id, '_wpsc_generated_sizes', true );
+
+			if ( empty( $current_size_metadata ) )
+				$current_size_metadata = array();
+
+			// If this thumbnail for the current size was not generated yet, or generated with different
+			// parameters (crop, for example), we need to regenerate the thumbnail
+			if ( ! array_key_exists( $size, $current_size_metadata ) || $current_size_metadata[$size] != $size_metadata ) {
+				_wpsc_regenerate_thumbnail_size( $thumb_id, $wp_size );
+			}
 		}
 	}
 
@@ -405,7 +418,7 @@ function wpsc_get_product_thumbnail( $id = null, $size = false, $attr = '' ) {
 /**
  * Output the thumbnail for the current product in the loop.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  wpsc_get_product_thumbnail()
  *
  * @param  string $size Optional. Defaults to 'single'. See {@link wpsc_get_product_thumbnail()} for a list of available sizes you can use.
@@ -442,8 +455,23 @@ function wpsc_product_no_thumbnail_image( $size = false, $attr = '' ) {
 			$size = 'archive';
 	}
 
-	$wp_size    = 'wpsc_product_' . $size . '_thumbnail';
-	$dimensions = $_wp_additional_image_sizes[$wp_size];
+	if ( is_string( $size ) ) {
+		$wp_size = $size;
+		if ( in_array( $size, array( 'single', 'taxonomy', 'cart', 'archive' ) ) )
+			$wp_size = 'wpsc_product_' . $size . '_thumbnail';
+
+		if ( array_key_exists( $wp_size, $_wp_additional_image_sizes ) )
+			$dimensions = $_wp_additional_image_sizes[$wp_size];
+		else
+			$dimensions = array( 'width' => '', 'height' => '' );
+	} elseif ( is_array( $size ) && count( $size ) == 2 ) {
+		$dimensions = array(
+			'width' => $size[0],
+			'height' => $size[1],
+		);
+	} else {
+		return;
+	}
 
 	$title      = wpsc_product_title_attribute( array( 'echo' => false ) );
 	$src        = apply_filters( 'wpsc_product_no_thumbnail_url', wpsc_locate_asset_uri( 'images/noimage.png' ), $size, $attr );
