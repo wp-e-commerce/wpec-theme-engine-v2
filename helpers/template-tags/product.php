@@ -367,14 +367,14 @@ function wpsc_get_product_thumbnail( $id = null, $size = false, $attr = '' ) {
 		return wpsc_get_product_thumbnail( $parent, $size, $attr );
 
 	if ( ! $size || ! in_array( $size, array( 'archive', 'taxonomy', 'single', 'cart', 'widget' ) ) ) {
-		if ( is_archive() )
-			$size = 'archive';
-		elseif ( is_tax() )
+		if ( is_tax( 'wpsc_product_category' ) || is_tax( 'product_tag' ) )
 			$size = 'taxonomy';
-		elseif ( wpsc_is_cart() )
+		elseif ( wpsc_is_cart() || wpsc_is_checkout() || wpsc_is_customer_account() )
 			$size = 'cart';
-		else
+		elseif ( is_singular( 'wpsc-product' ) )
 			$size = 'single';
+		else
+			$size = 'archive';
 	}
 
 	$wp_size = 'wpsc_product_' . $size . '_thumbnail';
@@ -386,7 +386,9 @@ function wpsc_get_product_thumbnail( $id = null, $size = false, $attr = '' ) {
 		$size_metadata = $_wp_additional_image_sizes[$wp_size];
 
 		// Get the current size metadata that has been generated for this product
-		$current_size_metadata = get_post_meta( $thumb_id, '_wpsc_current_size_metadata', true );
+		// This metadata is generated in {@link _wpsc_filter_generate_attachment_metadata()}
+		$current_size_metadata = get_post_meta( $thumb_id, '_wpsc_generated_sizes', true );
+
 		if ( empty( $current_size_metadata ) )
 			$current_size_metadata = array();
 

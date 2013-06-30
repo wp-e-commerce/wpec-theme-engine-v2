@@ -535,3 +535,60 @@ function _wpsc_action_check_thumbnail_support() {
 }
 
 add_action( 'after_setup_theme', '_wpsc_action_check_thumbnail_support', 99 );
+
+/**
+ * Keep track of generated sizes for a particular thumbnail.
+ *
+ * This is important because by keeping track of the size settings used when generating
+ * a thumbnail, we can lazily re-genarate thumbnails whenever these settings are
+ * changed (see {@link wpsc_get_product_thumbnail()}).
+ *
+ * Filter hook: wpsc_generate_attachment_metadata
+ *
+ * @since  0.1
+ * @access private
+ * @see  wpsc_get_product_thumbnail()
+ * @uses update_post_meta() Save the generated sizes into 'wpsc_generated_size'
+ *
+ * @param  array $metadata Thumbnail metadata
+ * @param  int   $id       Attachment ID
+ * @return array
+ */
+function _wpsc_filter_generate_attachment_metadata( $metadata, $id ) {
+	global $_wp_additional_image_sizes;
+
+	// Built-in sizes supported by WPEC
+	$sizes = array(
+		'cart',
+		'taxonomy',
+		'archive',
+		'single',
+	);
+
+	$meta = array();
+
+	// generate an array containing width, height, crop arguments for sizes
+	// generated for this particular attachment
+	foreach ( $sizes as $size ) {
+		$key = "wpsc_product_{$size}_thumbnail";
+
+		// if this size is not generated for this attachment, skip it
+		if ( ! array_key_exists( $key, $metadata['sizes'] ) )
+			continue;
+
+		// save the generated size settings for this image
+		$meta[$size] = $_wp_additional_image_sizes[$key];
+	}
+
+	// store the copy in a meta so that later we can pull it out and compare
+	update_post_meta( $id, '_wpsc_generated_sizes', $meta );
+
+	return $metadata;
+}
+
+add_filter(
+	'wp_generate_attachment_metadata',
+	'_wpsc_filter_generate_attachment_metadata',
+	10,
+	2
+);
