@@ -417,19 +417,32 @@ function wpsc_product_thumbnail( $size = false, $attr = '' ) {
  * Output a dummy thumbnail image in case the current product in the loop does not have a specified
  * featured thumbnail.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  $_wp_additional_image_size The array containing registered image sizes
  * @uses  apply_filters() Applies 'wpsc_product_no_thumbnail_url' filter
  * @uses  apply_filters() Applies 'wpsc_product_no_thumbnail_html' filter
  *
- * @param string $size Optional. Defaults to 'single'. See {@link wpsc_get_product_thumbnail()} for a list of available sizes you can use.
+ * @param string $size Optional. If this is not specified, the appropriate size will be detected based on the current page being viewed. See {@link wpsc_get_product_thumbnail()} for a list of available sizes you can use.
  * @param string $attr Optional. Query string or array of attributes. Defaults to ''.
  */
-function wpsc_product_no_thumbnail_image( $size = 'single', $attr = '' ) {
+function wpsc_product_no_thumbnail_image( $size = false, $attr = '' ) {
 	global $_wp_additional_image_sizes;
+
+	// automatically detect the correct $size if it's not specified
+	if ( ! $size ) {
+		if ( is_singular( 'wpsc-product' ) )
+			$size = 'single';
+		elseif ( is_tax( 'wpsc_product_category' ) || is_tax( 'product_tag' ) )
+			$size = 'taxonomy';
+		elseif ( wpsc_is_cart() || wpsc_is_customer_account() || wpsc_is_checkout() )
+			$size = 'cart';
+		else
+			$size = 'archive';
+	}
 
 	$wp_size    = 'wpsc_product_' . $size . '_thumbnail';
 	$dimensions = $_wp_additional_image_sizes[$wp_size];
+
 	$title      = wpsc_product_title_attribute( array( 'echo' => false ) );
 	$src        = apply_filters( 'wpsc_product_no_thumbnail_url', wpsc_locate_asset_uri( 'images/noimage.png' ), $size, $attr );
 	$html       = '<img alt="' . $title . '" src="' . $src . '" title="' . $title . '" width="' . $dimensions['width'] . '" height="' . $dimensions['height'] . '" />';
