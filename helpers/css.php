@@ -14,11 +14,21 @@ function _wpsc_te2_enqueue_styles() {
 	}
 }
 
+/**
+ * Inline style that ensure the product summary's width take the thumbnail width
+ * into consideration.
+ *
+ * @access private
+ * @since  0.1
+ *
+ * @return string CSS output
+ */
 function _wpsc_get_inline_style() {
 	$archive_width = get_option( 'product_image_width' );
-	$single_width = get_option( 'single_view_image_height' );
+	$single_width = get_option( 'single_view_image_width' );
 	$tax_width = get_option( 'category_image_width' );
 	$thumbnail_padding = apply_filters( 'wpsc_thumbnail_padding', 15 );
+
 	ob_start();
 	?>
 	.wpsc-page-main-store .wpsc-product-summary {

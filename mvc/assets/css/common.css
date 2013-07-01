@@ -4472,7 +4472,6 @@ br.clear {
 }
 .wpsc-controller .wpsc-product-summary {
   float: right;
-  min-width: 400px;
   width: 65%;
 }
 .wpsc-controller .wpsc-product-header,
