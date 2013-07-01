@@ -3,7 +3,7 @@
  * Whether current product loop has results to loop over.
  *
  * @see   WP_Query::have_posts()
- * @since 4.0
+ * @since 0.1
  *
  * @return bool
  */
@@ -15,7 +15,7 @@ function wpsc_have_products() {
  * Iterate the product index of the loop.
  *
  * @see   WP_Query::the_post()
- * @since 4.0
+ * @since 0.1
  */
 function wpsc_the_product() {
 	the_post();
@@ -24,7 +24,7 @@ function wpsc_the_product() {
 /**
  * Return the current product ID in the loop.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  get_the_ID()
  *
  * @return int The Product ID
@@ -36,7 +36,7 @@ function wpsc_get_product_id() {
 /**
  * Output the current product ID in the loop.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  the_ID()
  */
 function wpsc_product_id() {
@@ -46,7 +46,7 @@ function wpsc_product_id() {
 /**
  * Output the class attribute of the current product in the loop.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  post_class()
  */
 function wpsc_product_class( $class = '', $post_id = null ) {
@@ -63,7 +63,7 @@ function wpsc_get_product_class( $class, $post_id = null ) {
 /**
  * Return the product permalink.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  apply_filters() Applies 'wpsc_get_product_permalink' filter
  * @uses  get_permalink()
  *
@@ -81,7 +81,7 @@ function wpsc_get_product_permalink( $id = 0, $leavename = false ) {
 /**
  * Output the permalink of the current product in the loop.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  wpsc_get_product_permalink()
  */
 function wpsc_product_permalink( $id = 0 ) {
@@ -98,7 +98,7 @@ function wpsc_product_permalink( $id = 0 ) {
  * esc_attr()} before it is passed to the user or displayed. The default
  * as with {@link wpsc_product_title()}, is to display the title.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  esc_attr()
  * @uses  wp_parse_args()
  * @uses  wpsc_get_product_title()
@@ -128,7 +128,7 @@ function wpsc_product_title_attribute( $args = '' ) {
 /**
  * Return the title a product.
  *
- * @since 4.0
+ * @since 0.1
  * @uses apply_filters() Applies 'wpsc_get_product_title' filter
  * @uses get_the_title()
  *
@@ -142,7 +142,7 @@ function wpsc_get_product_title( $id = 0 ) {
 /**
  * Output the title of the current product in the loop.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  apply_filters()          Applies 'wpsc_product_title' filter.
  * @uses  wpsc_get_product_title()
  *
@@ -176,7 +176,7 @@ function wpsc_product_title( $before = '', $after = '', $id = 0, $echo = true ) 
  *     'after'     - HTML after the list. Defaults to ''.
  *     'separator' - The separator of list items. Defaults to ', '.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  get_the_term_list()
  * @uses  wp_parse_args()
  *
@@ -200,7 +200,7 @@ function wpsc_get_product_category_list( $args = '' ) {
 /**
  * Output the category list of the current product in the loop.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  wpsc_get_product_category_list()
  *
  * @param string $args Optional. Defaults to ''. See {@link wpsc_get_product_category_list()} for the full list of arguments you can use to customize the output.
@@ -212,7 +212,7 @@ function wpsc_product_category_list( $args = '' ) {
 /**
  * Return HTML for the list of product tags.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  get_the_term_list()
  * @uses  wp_parse_args()
  *
@@ -235,7 +235,7 @@ function wpsc_get_product_tag_list( $args = '' ) {
 /**
  * Return the number of categories associated with a product.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  get_the_terms()
  *
  * @param  int $id Optional. Product ID. Defaults to current product in the loop.
@@ -253,7 +253,7 @@ function wpsc_get_product_category_count( $id = 0 ) {
 /**
  * Return the number of tags associated with a product.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  get_the_terms()
  *
  * @param  int $id Optional. Product ID. Defaults to current product in the loop.
@@ -271,7 +271,7 @@ function wpsc_get_product_tag_count( $id = 0 ) {
 /**
  * Output the edit link of a product.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  apply_filters() Applies 'wpsc_edit_product_link' filter.
  * @uses  edit_post_link()
  * @uses  wp_parse_args()
@@ -299,7 +299,7 @@ function wpsc_edit_product_link( $args = '' ) {
 /**
  * Return the ID of the product thumbnail of a product.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  get_post_thumbnail_id()
  *
  * @param  null|int $product_id Optional. The product ID. Defaults to the current product ID in the loop.
@@ -486,7 +486,7 @@ function wpsc_product_no_thumbnail_image( $size = false, $attr = '' ) {
  * Output the description of the current product in the loop.
  *
  * @see   wpsc_get_product_description()
- * @since 4.0
+ * @since 0.1
  * @uses  apply_filters() Applies 'the_content' filter
  * @uses  apply_filters() Applies 'wpsc_product_description' filter
  * @uses  wpsc_get_product_description()
@@ -505,7 +505,7 @@ function wpsc_product_description( $more_link_text = null, $mode = 'with-teaser'
 /**
  * Remove the "more" link by hooking into 'the_content_more_link' and return an empty string.
  *
- * @since 4.0
+ * @since 0.1
  *
  * @param  string $link
  * @return string An empty string
@@ -528,7 +528,7 @@ function wpsc_filter_remove_the_content_more_link( $link ) {
  *     'only-teaser' - Only the teaser is displayed, the text after <!--more--> tag will be ignored
  *     'no-teaser'   - The teaser is stripped out.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  add_filter()      Adds 'wpsc_filter_remove_content_more_link' to 'the_content_more_link' filter
  * @uses  apply_filters()   Applies 'wpsc_get_product_description' filter hook
  * @uses  get_the_content() Retrieves product's description
@@ -564,7 +564,7 @@ function wpsc_get_product_description( $more_link_text = null, $mode = 'with-tea
  * Display the drop down listing child variation terms of a variation set associated with a certain
  * product.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  wpsc_get_product_variation_set_dropdown()
  *
  * @param  int $variation_set_id The term_id of the variation set.
@@ -619,7 +619,7 @@ function wpsc_product_variation_dropdown( $args = '' ) {
 /**
  * Return the HTML for variation set dropdown of a certain product.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  wpsc_get_product_id()
  *
  * @param  int $variation_set_id The term_id of the variation set.
@@ -650,7 +650,7 @@ function wpsc_get_product_variation_set_dropdown( $variation_set_id, $product_id
  * See {@link wpsc_get_product_original_price()} for more information about the $format
  * argument.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  apply_filters() Applies 'wpsc_product_original_price' filter.
  * @uses  wpsc_get_product_original_price()
  *
@@ -668,7 +668,7 @@ function wpsc_product_original_price( $product_id = null, $from_text = true ) {
  *     'string' - Return the price with currency symbol and 2 decimal places (e.g. $10.26)
  *     'float'  - Return an unformatted numeric value with no currency symbol (e.g. 10.259)
  *
- * @since 4.0
+ * @since 0.1
  * @uses  apply_filters() Applies 'wpsc_get_product_original_price' filter.
  * @uses  get_post_meta()
  * @uses  wpsc_format_currency()
@@ -703,7 +703,7 @@ function _wpsc_get_from_text( $price ) {
  *
  * See {@link wpsc_get_product_sale_price()} for more information about the $format argument.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  apply_filters() Applies 'wpsc_product_sale_price' filter.
  * @uses  wpsc_get_product_sale_price()
  *
@@ -725,7 +725,7 @@ function wpsc_product_you_save( $product_id = null, $format = false, $from_text 
  *     'string' - Return the price with currency symbol and 2 decimal places (e.g. $10.26)
  *     'float'  - Return an unformatted numeric value with no currency symbol (e.g. 10.259)
  *
- * @since 4.0
+ * @since 0.1
  * @uses  apply_filters() Applies 'wpsc_get_product_sale_price' filter.
  * @uses  get_post_meta()
  * @uses  wpsc_format_currency()
@@ -778,7 +778,7 @@ function wpsc_get_product_you_save( $product_id = null, $format = false, $from_t
 /**
  * Wraps the read more link with a custom class.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  get_post_type()
  *
  * @param  string $link
@@ -812,7 +812,7 @@ function wpsc_product_pagination( $position = 'bottom' ) {
 /**
  * Return the number of pages for the current loop.
  *
- * @since 4.0
+ * @since 0.1
  *
  * @return int
  */
@@ -824,7 +824,7 @@ function wpsc_product_pagination_page_count() {
 /**
  * Output the pagination count.
  *
- * @since 4.0
+ * @since 0.1
  * @uses apply_filters() Applies 'wpsc_product_pagination_count' filter.
  * @uses get_query_var()
  * @uses wpsc_get_current_page_number()
@@ -861,7 +861,7 @@ function wpsc_product_pagination_count() {
 /**
  * Return the current page number of the current loop.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  get_query_var()
  *
  * @return int
@@ -879,7 +879,7 @@ function wpsc_get_current_page_number() {
  *
  * See {@link paginate_links()} for the available options that you can use with this function.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  $wp_rewrite
  * @uses  apply_filters() Applies 'wpsc_product_pagination_links'      filter.
  * @uses  apply_filters() Applies 'wpsc_product_pagination_links_args' filter.

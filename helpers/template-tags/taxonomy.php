@@ -3,7 +3,7 @@
 /**
  * Output the permalink of a product category.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  wpsc_get_product_category_permalink()
  *
  * @param  int|string|object $cat Optional. Either a term ID, term object or term slug.  Defaults to the main product category.
@@ -15,7 +15,7 @@ function wpsc_product_category_permalink( $cat = '' ) {
 /**
  * Return the permalink of a product category.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  apply_filters() Applies 'wpsc_get_product_category_url' filter.
  * @uses  get_query_var()
  * @uses  get_term_link()
@@ -38,7 +38,7 @@ function wpsc_get_product_category_permalink( $cat = '' ) {
 /**
  * Output a product tag's permalink.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  wpsc_get_product_tag_permalink()
  *
  * @param  int|string|object $tag Optional. Either a term ID, term object or term slug. Defaults to the main product tag.
@@ -50,7 +50,7 @@ function wpsc_product_tag_permalink( $tag = '' ) {
 /**
  * Return a product tag's permalink.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  get_query_var()
  * @uses  get_term_link()
  *
@@ -72,7 +72,7 @@ function wpsc_get_product_tag_permalink( $tag = '' ) {
 /**
  * Return the name of a product category.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  apply_filters() Applies 'wpsc_get_product_category_name' filter.
  * @uses  get_query_var()
  * @uses  get_term()
@@ -103,7 +103,7 @@ function wpsc_get_product_category_name( $term = '' ) {
 /**
  * Return the name of a product tag.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  apply_filters() Applies 'wpsc_get_product_tag_name' filter.
  * @uses  get_query_var()
  * @uses  get_term()
@@ -151,7 +151,7 @@ function wpsc_get_product_tag_name( $term = '' ) {
  *
  * The placeholder %s will be replaced with the class attribute of the corresonding element.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  apply_filters() Applies 'wpsc_product_category_list_class' filter.
  * @uses  wp_list_categories()
  * @uses  wp_parse_args()

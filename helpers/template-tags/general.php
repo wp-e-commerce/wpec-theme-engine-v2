@@ -4,7 +4,7 @@
  *
  * See {@link wpsc_get_breadcrumb()} for a list of available options to customize the output.
  *
- * @since 4.0
+ * @since 0.1
  * @uses  wpsc_get_breadcrumb()
  * @uses  wpsc_product_breadcrumb_after()
  * @uses  wpsc_product_breadcrumb_before()

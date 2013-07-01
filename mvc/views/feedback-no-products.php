@@ -4,7 +4,7 @@
  *
  * @package wp-e-commerce
  * @subpackage theme_compat
- * @since 4.0
+ * @since 0.1
  */
 ?>
 
