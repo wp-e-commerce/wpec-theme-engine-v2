@@ -464,6 +464,7 @@ function wpsc_product_no_thumbnail_image( $size = false, $attr = '' ) {
 			$dimensions = $_wp_additional_image_sizes[$wp_size];
 		else
 			$dimensions = array( 'width' => '', 'height' => '' );
+
 	} elseif ( is_array( $size ) && count( $size ) == 2 ) {
 		$dimensions = array(
 			'width' => $size[0],
@@ -897,7 +898,7 @@ function wpsc_get_product_pagination_links( $args = '' ) {
 	$base = '';
 
 	if ( wpsc_is_store() )
-		$base = home_url( wpsc_get_option( 'store_slug' ) );
+		$base = home_url( $wp_rewrite->root . wpsc_get_option( 'store_slug' ) );
 	elseif ( wpsc_is_product_category() )
 		$base = wpsc_get_product_category_permalink();
 	elseif ( wpsc_is_product_tag() )

@@ -22,6 +22,11 @@ add_filter(
 	'_wpsc_te2_filter_store_slug'
 );
 
+add_filter(
+	'option_wpsc_category_base_slug',
+	'_wpsc_te2_filter_category_base_slug'
+);
+
 /**
  * Retrieve WP e-Commerce option value based on name of the option.
  *
@@ -79,6 +84,7 @@ function _wpsc_action_update_transact_url_option( $option ) {
  * Action hooks: 'wpsc_te2_activate', 'add_option_rewrite_rules'
  *
  * @since  0.1
+ * @access private
  * @uses   WPSC_Settings::_action_setup()
  */
 function _wpsc_te2_action_setup_settings() {
@@ -134,6 +140,9 @@ function _wpsc_te2_action_sanitize_show_on_front( $value ) {
  * In case store is set to display on front page, force the 'store_slug' option
  * to always return empty value.
  *
+ * @since  0.1
+ * @access private
+ *
  * @param  string $value Current value of 'store_slug' option
  * @return string        New value
  */
@@ -141,4 +150,30 @@ function _wpsc_te2_filter_store_slug( $value ) {
 	if ( wpsc_get_option( 'store_as_front_page' ) )
 		return '';
 	return false;
+}
+
+/**
+ * Prevent conflict with category base slug in case front page is set to
+ * store. In that case, the category base slug.
+ *
+ * Filter hook: option_wpsc_store_slug
+ *
+ * @since  0.1
+ * @access private
+ *
+ * @param  string $value Current value
+ * @return string        New value
+ */
+function _wpsc_te2_filter_category_base_slug( $value ) {
+	if ( ! wpsc_get_option( 'store_as_front_page') )
+		return $value;
+
+	$category_base = get_option( 'category_base' );
+	if ( ! $category_base )
+		$category_base = 'category';
+
+	if ( $value == $category_base )
+		$value = 'store-' . $value;
+
+	return $value;
 }

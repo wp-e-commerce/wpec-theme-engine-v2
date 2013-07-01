@@ -61,6 +61,8 @@ function _wpsc_te_v2_product_post_type_args( $args ) {
 	// page ('has_archive' has to be set to a non-empty value)
 	if ( ! $store_slug )
 		$archive_slug = '/';
+	else
+		$store_slug .= '/';
 
 	// get single product base slug
 	$product_slug = $store_slug . wpsc_get_option( 'product_base_slug' );
@@ -76,12 +78,24 @@ function _wpsc_te_v2_product_post_type_args( $args ) {
 	return $args;
 }
 
+/**
+ * Modify wpsc_product_category arguments to use the base product category slug
+ * option
+ *
+ * Filter hook: wpsc_register_taxonomies_product_category_args
+ * @since  0.1
+ * @access private
+ * @param  array $args Product category arguments
+ * @return array       Modified product category arguments
+ */
 function _wpsc_te_v2_product_category_args( $args ) {
 	$store_slug = wpsc_get_option( 'store_slug' );
+	if ( $store_slug )
+		$store_slug .= '/';
 	$category_base_slug = wpsc_get_option( 'category_base_slug' );
 	$hierarchical_product_category = wpsc_get_option( 'hierarchical_product_category_url' );
 
-	$args['rewrite']['slug'] = $store_slug . '/' . $category_base_slug;
+	$args['rewrite']['slug'] = $store_slug . $category_base_slug;
 	$args['rewrite']['hierarchical'] = (bool) $hierarchical_product_category;
 
 	return $args;
