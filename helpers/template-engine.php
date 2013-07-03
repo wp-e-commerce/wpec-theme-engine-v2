@@ -85,7 +85,7 @@ function wpsc_locate_template_part( $files, $load = false, $require_once = true 
 	if ( is_child_theme() )
 		$paths[] = TEMPLATEPATH . '/wp-e-commerce/template-parts';
 
-	$paths[] = WPSC_TE_V2_VIEWS_PATH;
+	$paths[] = WPSC_TE_V2_TEMPLATE_PARTS_PATH;
 
 	return _wpsc_locate_stuff( $paths, $files, $load, $require_once );
 }

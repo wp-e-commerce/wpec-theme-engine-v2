@@ -2,8 +2,8 @@
 
 define( 'WPSC_TE_V2_MVC_PATH', WPSC_TE_V2_PATH . '/mvc' );
 define( 'WPSC_TE_V2_CONTROLLERS_PATH', WPSC_TE_V2_MVC_PATH . '/controllers' );
-define( 'WPSC_TE_V2_VIEWS_PATH', WPSC_TE_V2_MVC_PATH . '/views' );
-define( 'WPSC_TE_V2_ASSETS_PATH', WPSC_TE_V2_MVC_PATH . '/assets' );
+define( 'WPSC_TE_V2_TEMPLATE_PARTS_PATH', WPSC_TE_V2_THEMING_PATH . '/template-parts' );
+define( 'WPSC_TE_V2_ASSETS_PATH', WPSC_TE_V2_THEMING_PATH . '/assets' );
 
 function _wpsc_te2_mvc_init() {
 	require_once( WPSC_TE_V2_CLASSES_PATH . '/router.php' );
