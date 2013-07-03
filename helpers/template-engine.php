@@ -6,107 +6,6 @@ if ( ! defined( 'WPSC_THEME_ENGINE_TEMPLATE_PART_FOLDER' ) )
 if ( ! defined( 'WPSC_THEME_ENGINE_LESS_JS' ) )
 	define( 'WPSC_THEME_ENGINE_LESS_JS', false );
 
-/**
- * Locate the path to a certain WPEC theme file.
- *
- * In 4.0, we allow themes and child themes to override a default template, stylesheet, script or
- * image files by providing the same file structure inside the theme (or child theme) folder.
- *
- * This function searches for the file in multiple paths. It willlook for the template in the
- * following order:
- * - wp-content/themes/wpsc-theme-engine/{$current_theme_name}
- * - wp-content/themes/wpsc-theme-engine/{$parent_theme_name}
- * - wp-content/themes/wpsc-theme-engine
- * - current theme's path
- * - parent theme's path
- * - wp-content/plugins/wp-e-commerce/wpsc-theme-engine/{$current_theme_name}
- * - wp-content/plugins/wp-e-commerce/wpsc-theme-engine/{$parent_theme_name}
- * - wp-content/plugins/wp-e-commerce
- *
- * The purpose of the "wp-content/themes/wpsc-theme-engine" path is to provide a way for the users
- * to preserve their custom templates when the current theme is updated. This makes it much more
- * flexible for users who is already using a child theme or a third-party WP e-Commerce theme.
- *
- * Inside wp-content/plugins/wp-e-commerce/wpsc-theme-engine, we provide template files for
- * TwentyTen and TwentyEleven in two separate folders. All the relevant template parts are inside
- * wpsc-theme-engine/wp-e-commerce.
- *
- * For example, on a WordPress installation that uses TwentyTen as the main theme, the main catalog
- * template by default will be located in wp-content/plugins/wp-e-commerce/twentyeleven/archive-wpsc-product.php.
- * If you want to override this template in your TwentyTen theme, simply create an archive-wpsc-product.php
- * file in wp-content/themes/twentyeleven/ and that file will be used.
- *
- * You can essentially override any kind of files inside wp-content/plugins/wp-e-commerce/wpsc-theme-engine/{$theme_name}
- * by creating the same file structure in wp-content/themes/{$theme_name}.
- *
- * @since 0.1
- * @uses  get_stylesheet()
- * @uses  get_template()
- * @uses  get_theme_root()
- *
- * @param  array  $files The file names you want to look for
- * @return string        The path to the matched template file
- */
-function wpsc_locate_theme_file( $files ) {
-	$located = '';
-	$theme_root = get_theme_root();
-	$current_theme = get_stylesheet();
-	$parent_theme = get_template();
-
-	if ( $current_theme == $parent_theme ) {
-		$paths = array(
-			STYLESHEETPATH,
-		);
-	} else {
-		$paths = array(
-			STYLESHEETPATH,
-			TEMPLATEPATH,
-		);
-	}
-
-	foreach ( (array) $files as $file ) {
-		if ( ! $file )
-			continue;
-
-		foreach ( $paths as $path ) {
-			if ( file_exists( $path . '/' . $file ) ) {
-				$located = realpath( $path . '/' . $file );
-				break 2;
-			}
-		}
-	}
-
-	return $located;
-}
-
-/**
- * Return the URI of a certain WPEC file inside our theme engine folder structure.
- *
- * See {@link wpsc_locate_theme_file()} for more information about how this works.
- *
- * @since 0.1
- * @uses  content_url()
- * @uses  get_site_url()
- * @uses  plugins_url()
- * @uses  wpsc_locate_theme_file()
- *
- * @param  array  $file Files to look for.
- * @return string       The URL of the matched file
- */
-function wpsc_locate_theme_file_uri( $file ) {
-	$path = wpsc_locate_theme_file( $file );
-	if ( strpos( $path, WP_CONTENT_DIR ) !== false )
-		return content_url( substr( $path, strlen( WP_CONTENT_DIR ) ) );
-	elseif ( strpos( $path, WP_PLUGIN_DIR ) !== false )
-		return plugins_url( substr( $path, strlen( WP_PLUGIN_DIR ) ) );
-	elseif ( strpos( $path, WPMU_PLUGIN_DIR ) !== false )
-		return plugins_url( substr( $path, strlen( WP_PLUGIN_DIR ) ) );
-	elseif ( strpos( $path, ABSPATH ) !== false )
-		return get_site_url( null, substr( $path, strlen( ABSPATH ) ) );
-
-	return '';
-}
-
 function wpsc_locate_asset( $file ) {
 	$paths = array(
 		STYLESHEETPATH . '/wp-e-commerce/assets',
@@ -250,7 +149,6 @@ function wpsc_get_template_part( $slug = false, $name = null ) {
  * @uses  get_theme_root()
  */
 function _wpsc_action_after_setup_theme() {
-	$theme_root = get_theme_root();
 	$current_theme = get_stylesheet();
 	$parent_theme = get_template();
 

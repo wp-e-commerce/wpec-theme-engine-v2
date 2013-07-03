@@ -75,12 +75,12 @@ class WPSC_Widget_On_Sale extends WP_Widget {
 		if ( ! empty( $instance['post_count'] ) )
 			$products = array_slice( $products, 0, $instance['post_count'] );
 
-		include( WPSC_TE_V2_PATH . '/templates/widgets/on-sale/widget.php' );
+		include( WPSC_TE_V2_SNIPPETS_PATH . '/widgets/on-sale/widget.php' );
 	}
 
 	public function form( $instance ) {
 		$instance = wp_parse_args( $instance, $this->defaults );
-		include( WPSC_TE_V2_PATH . '/templates/widgets/on-sale/form.php' );
+		include( WPSC_TE_V2_SNIPPETS_PATH . '/widgets/on-sale/form.php' );
 	}
 
 	public function update( $new_instance, $old_instance ) {

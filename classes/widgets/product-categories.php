@@ -101,7 +101,7 @@ class WPSC_Widget_Product_Categories extends WP_Widget {
 		$level ++;
 		if ( ! empty( $this->children_of[$parent] ) ) {
 			$categories = $this->children_of[$parent];
-			include( WPSC_TE_V2_PATH . '/templates/widgets/product-categories/widget-list.php' );
+			include( WPSC_TE_V2_SNIPPETS_PATH . '/widgets/product-categories/widget-list.php' );
 		}
 	}
 
@@ -155,7 +155,7 @@ class WPSC_Widget_Product_Categories extends WP_Widget {
 		$categories = get_terms( 'wpsc_product_category', array(
 			'hide_empty' => false,
 		) );
-		include( WPSC_TE_V2_PATH . '/templates/widgets/product-categories/form.php' );
+		include( WPSC_TE_V2_SNIPPETS_PATH . '/widgets/product-categories/form.php' );
 	}
 
 	private function category_image( $cat ) {

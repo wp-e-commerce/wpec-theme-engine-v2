@@ -72,7 +72,7 @@ class WPSC_Cart_Item_Table extends WPSC_Table
 	public function display() {
 		global $wpsc_cart;
 		$this->before_table();
-		include( WPSC_TE_V2_PATH . '/templates/cart-item-table/display.php' );
+		include( WPSC_TE_V2_SNIPPETS_PATH . '/cart-item-table/display.php' );
 		$this->after_table();
 	}
 

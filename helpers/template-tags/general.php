@@ -562,7 +562,7 @@ function wpsc_customer_orders_pagination( $args = array() ) {
 function wpsc_get_customer_account_order_details() {
 	$c = _wpsc_get_current_controller();
 	$fields = $c->form->get_fields();
-	include_once( WPSC_TE_V2_PATH . '/templates/user-account-order-details.php' );
+	include_once( WPSC_TE_V2_SNIPPETS_PATH . '/user-account-order-details.php' );
 }
 
 function wpsc_customer_account_order_details() {

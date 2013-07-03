@@ -44,12 +44,12 @@ class WPSC_Widget_Latest_Products extends WP_Widget {
 
 		$title = apply_filters( 'widget_title', $instance['title'] );
 
-		include( WPSC_TE_V2_PATH . '/templates/widgets/latest-products/widget.php' );
+		include( WPSC_TE_V2_SNIPPETS_PATH . '/widgets/latest-products/widget.php' );
 	}
 
 	public function form( $instance ) {
 		$instance = wp_parse_args( $instance, $this->defaults );
-		include( WPSC_TE_V2_PATH . '/templates/widgets/latest-products/form.php' );
+		include( WPSC_TE_V2_SNIPPETS_PATH . '/widgets/latest-products/form.php' );
 	}
 
 	public function update( $new_instance, $old_instance ) {

@@ -52,7 +52,7 @@ class WPSC_Table {
 
 	public function display() {
 		$this->before_table();
-		include( WPSC_TE_V2_PATH . '/templates/table-display.php' );
+		include( WPSC_TE_V2_SNIPPETS_PATH . '/table-display.php' );
 		$this->after_table();
 	}
 }
