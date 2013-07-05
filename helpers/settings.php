@@ -1,15 +1,5 @@
 <?php
 
-add_action(
-	'update_option_wpsc_store_slug',
-	'_wpsc_action_update_transact_url_option'
-);
-
-add_action(
-	'add_option_rewrite_rules',
-	'_wpsc_action_update_transact_url_option'
-);
-
 add_action( 'wpsc_te2_activate', '_wpsc_te2_action_setup_settings');
 
 add_action(
@@ -20,6 +10,11 @@ add_action(
 add_filter(
 	'pre_option_wpsc_store_slug',
 	'_wpsc_te2_filter_store_slug'
+);
+
+add_filter(
+	'pre_option_transact_url',
+	'_wpsc_te2_filter_option_transact_url'
 );
 
 add_filter(
@@ -64,18 +59,19 @@ function wpsc_update_option( $option_name, $value ) {
 
 /**
  * The 'transact_url' option is still used by other components outside of theme
- * engine (such as payment gateways). To ensure compatibility, we need to keep
- * this option updated and point to the last step of the checkout process.
+ * engine (such as payment gateways). To ensure compatibility, we need to point
+ * this option to the last step of the checkout process.
  *
- * Action hook: 'update_option_wpsc_store_slug'.
+ * Action hook: 'pre_option_transact_url'.
  *
  * @access private
  *
  * @since  0.1
- * @param  string $option Value of the store page slug
+ * @param  string $option Value of the 'transact_url' option
+ * @return string The new transaction result URL
  */
-function _wpsc_action_update_transact_url_option( $option ) {
-	update_option( 'transact_url', wpsc_get_checkout_url( 'results' ) );
+function _wpsc_te2_filter_option_transact_url( $value ) {
+	return wpsc_get_checkout_url( 'results' );
 }
 
 /**
