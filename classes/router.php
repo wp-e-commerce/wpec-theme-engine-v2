@@ -45,7 +45,7 @@ class WPSC_Router {
 		if ( wpsc_get_option( 'store_as_front_page' ) )
 			add_action( 'pre_get_posts', array( $this, '_action_prepare_front_page' ), 1, 1 );
 
-		add_action( 'wpsc_setup_customer', array( $this, '_action_setup_controller' ), 1 );
+		add_action( 'wp', array( $this, '_action_setup_controller' ), 1 );
 	}
 
 	/**
