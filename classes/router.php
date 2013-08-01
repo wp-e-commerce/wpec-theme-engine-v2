@@ -84,10 +84,12 @@ class WPSC_Router {
 	private function is_store_front_page() {
 		$controller = get_query_var( 'wpsc_controller' );
 
+		$id = get_queried_object_id();
+
 		// is_home() is always true if this is the front page and store is set
 		// to be displayed here. This is because 'page_on_front' is set to an
 		// empty value whenever wpsc_store_as_front_page is set to true
-		return ! $controller && is_home() && wpsc_get_option( 'store_as_front_page' );
+		return ! $controller && is_home() && ! $id && wpsc_get_option( 'store_as_front_page' );
 	}
 
 	/**
@@ -178,7 +180,7 @@ class WPSC_Router {
 		$wp_query->is_404 = false;
 
 		// front page flags
-		if ( ! $this->is_store_front_page() ) {
+	 	if ( ! $this->is_store_front_page() ) {
 			$wp_query->is_home = false;
 			$wp_query->wpsc_is_store_front_page = false;
 		}

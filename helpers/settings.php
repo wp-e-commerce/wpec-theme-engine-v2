@@ -113,10 +113,7 @@ function _wpsc_te2_action_sanitize_show_on_front( $value ) {
 	// if the value is 'wpsc_main_store', just reset it back to 'posts' or
 	// 'page'.
 	if ( $value == 'wpsc_main_store' ) {
-		if ( ! get_option( 'page_on_front' ) && ! get_option( 'page_for_posts' ) )
-			$value = 'posts';
-		else
-			$value = 'page';
+		$value = 'page';
 		wpsc_update_option( 'store_as_front_page', true );
 	} else {
 		// if the user selected something other than main store as front page,
@@ -128,7 +125,6 @@ function _wpsc_te2_action_sanitize_show_on_front( $value ) {
 	// slug has possibly changed
 	wpsc_register_post_types();
 	flush_rewrite_rules();
-
 	return $value;
 }
 
