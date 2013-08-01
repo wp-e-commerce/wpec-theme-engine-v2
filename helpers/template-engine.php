@@ -400,40 +400,6 @@ function _wpsc_action_remove_post_type_thumbnail_support() {
 	remove_post_type_support( 'page', 'thumbnail' );
 }
 
-function _wpsc_action_check_thumbnail_support() {
-	if ( ! current_theme_supports( 'post-thumbnails' ) ) {
-		add_theme_support( 'post-thumbnails' );
-		add_action( 'init', '_wpsc_action_remove_post_type_thumbnail_support' );
-	}
-
-	$crop = wpsc_get_option( 'crop_thumbnails' );
-
-	add_image_size(
-		'wpsc_product_single_thumbnail',
-		get_option( 'single_view_image_width' ),
-		get_option( 'single_view_image_height' ),
-		$crop
-	);
-
-	add_image_size(
-		'wpsc_product_archive_thumbnail',
-		get_option( 'product_image_width' ),
-		get_option( 'product_image_height' ),
-		$crop
-	);
-
-	add_image_size(
-		'wpsc_product_taxonomy_thumbnail',
-		get_option( 'category_image_width' ),
-		get_option( 'category_image_height' ),
-		$crop
-	);
-
-	add_image_size( 'wpsc_product_cart_thumbnail', 64, 64, $crop );
-}
-
-add_action( 'after_setup_theme', '_wpsc_action_check_thumbnail_support', 99 );
-
 /**
  * Keep track of generated sizes for a particular thumbnail.
  *

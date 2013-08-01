@@ -19,12 +19,12 @@ if ( ! function_exists( 'wpsc_the_product_thumbnail' ) ) {
 		}
 
 		if ( $page == 'manage-products' && isset( $thumbnail_id ) ) {
-			$current_size = image_get_intermediate_size( $thumbnail_id, 'admin-product-thumbnails' );
+			$current_size = image_get_intermediate_size( $thumbnail_id, 'wpsc_product_admin_thumbnail' );
 
 			if ( ! $current_size )
 				_wpsc_regenerate_thumbnail_size( $thumbnail_id, 'admin-product-thumbnails' );
 
-			$src = wp_get_attachment_image_src( $thumbnail_id, 'admin-product-thumbnails' );
+			$src = wp_get_attachment_image_src( $thumbnail_id, 'wpsc_product_admin_thumbnail' );
 
 			if ( ! empty( $src ) && is_string( $src[0] ) )
 				$thumbnail = $src[0];
