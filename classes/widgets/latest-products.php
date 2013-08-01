@@ -6,7 +6,7 @@ class WPSC_Widget_Latest_Products extends WP_Widget {
 	public function __construct() {
 		parent::__construct(
 			'wpsc_latest_products_widget',
-			__( 'Latest Products', 'wpsc' ),
+			__( '(WPEC) Latest Products', 'wpsc' ),
 			array(
 				'description' => __( 'WP e-Commerce Latest Products Widget', 'wpsc' ),
 			)

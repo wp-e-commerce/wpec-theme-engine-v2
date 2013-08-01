@@ -10,7 +10,7 @@ class WPSC_Widget_Price_Range extends WP_Widget {
 
 		parent::__construct(
 			'wpsc_widget_price_range',
-			__( 'Price Range', 'wpsc' ),
+			__( '(WPEC) Price Range', 'wpsc' ),
 			array(
 				'description' => __( 'WP e-Commerce Price Range Widget', 'wpsc' )
 			)

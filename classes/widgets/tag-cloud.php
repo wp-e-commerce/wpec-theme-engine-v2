@@ -10,7 +10,7 @@ class WPSC_Widget_Tag_Cloud extends WP_Widget {
 
 		parent::__construct(
 			'wpsc_tag_cloud_widget',
-			__( 'Product Tag Cloud', 'wpsc' ),
+			__( '(WPEC) Product Tag Cloud', 'wpsc' ),
 			array(
 				'description' => __( 'WP e-Commerce Tag Cloud Widget', 'wpsc' )
 			)

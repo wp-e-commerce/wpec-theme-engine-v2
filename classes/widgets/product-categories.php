@@ -22,7 +22,7 @@ class WPSC_Widget_Product_Categories extends WP_Widget {
 
 		parent::__construct(
 			'wpsc_product_categories',
-			__( 'Product Categories', 'wpsc' ),
+			__( '(WPEC) Product Categories', 'wpsc' ),
 			$widget_ops
 		);
 

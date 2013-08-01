@@ -6,7 +6,7 @@ class WPSC_Widget_Cart extends WP_Widget {
 	public function __construct() {
 		parent::__construct(
 			'wpsc_cart_widget',
-			__( 'Shopping Cart', 'wpsc' ),
+			__( '(WPEC) Shopping Cart', 'wpsc' ),
 			array(
 				'description' => __( 'WP e-Commerce Shopping Cart Widget', 'wpsc' ),
 			)

@@ -19,7 +19,7 @@ class WPSC_Widget_On_Sale extends WP_Widget {
 
 		parent::__construct(
 			'wpsc_widget_on_sale',
-			__( 'Products On Sale', 'wpsc' ),
+			__( '(WPEC) Products On Sale', 'wpsc' ),
 			array(
 				'description' => __( 'WP e-Commerce Product On Sale Widget', 'wpsc' )
 			)
