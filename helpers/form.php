@@ -581,15 +581,17 @@ function wpsc_form_checkbox( $name, $value, $label = false, $checked = false, $a
 	}
 }
 
-function wpsc_form_checkboxes( $name, $selected_value = '', $options = array(), $atts = array(), $echo = true ) {
+function wpsc_form_checkboxes( $name, $selected_values = '', $options = array(), $atts = array(), $echo = true ) {
 	if ( ! is_array( $atts ) )
 		$atts = array();
+
+	$selected_values = (array) $selected_values;
 
 	$output = '';
 	foreach ( $options as $value => $title ) {
 		$option_atts = $atts;
 		$option_atts['id'] = $atts['id'] . '-' . sanitize_title( $value );
-		$checked = ( $value == $selected_value );
+		$checked = in_array( $value, $selected_values );
 		$output .= wpsc_form_checkbox( $name, $value, $title, $checked, $option_atts, false );
 	}
 
@@ -638,14 +640,14 @@ function wpsc_form_radios( $name, $selected_value = '', $options = array(), $att
 	echo $output;
 }
 
-function wpsc_form_select( $name, $selected_value = '', $options = array(), $atts = array(), $echo = true ) {
+function wpsc_form_select( $name, $selected_values = '', $options = array(), $atts = array(), $echo = true ) {
 	if ( ! is_array( $atts ) )
 		$atts = array();
 
 	$atts['name'] = $name;
 
 	$output = '<select ' . _wpsc_form_attributes( $atts ) . '>';
-	$output .= _wpsc_form_select_options( $options, $selected_value );
+	$output .= _wpsc_form_select_options( $options, $selected_values );
 	$output .= '</select>';
 
 	if ( ! $echo )
@@ -654,8 +656,10 @@ function wpsc_form_select( $name, $selected_value = '', $options = array(), $att
 	echo $output;
 }
 
-function _wpsc_form_select_options( $options, $selected_value ) {
+function _wpsc_form_select_options( $options, $selected_values ) {
 	$output = '';
+
+	$selected_values = (array) $selected_values;
 
 	foreach ( $options as $value => $option_title ) {
 		if ( is_array( $option_title ) ) {
@@ -666,12 +670,12 @@ function _wpsc_form_select_options( $options, $selected_value ) {
 				if ( array_key_exists( 'attributes', $option_title ) )
 					$attributes = array_merge( $attributes, $option_title['attributes'] );
 				$attributes = _wpsc_form_attributes( $attributes ) . ' ';
-				$output .= '<option ' . $attributes . selected( $value, $selected_value, false ) . '>' . $option_title['title'] . '</option>';
+				$output .= '<option ' . $attributes . selected( in_array( $value, $selected_values ), true, false ) . '>' . $option_title['title'] . '</option>';
 			} else {
 				$output .= _wpsc_form_select_optgroup( $value, $option_title, $selected_value );
 			}
 		} else {
-			$output .= '<option value="' . esc_attr( $value ) . '" ' . selected( $value, $selected_value, false ) . '>' . $option_title . '</option>';
+			$output .= '<option value="' . esc_attr( $value ) . '" ' . selected( in_array( $value, $selected_values ), true, false ) . '>' . $option_title . '</option>';
 		}
 	}
 	return $output;

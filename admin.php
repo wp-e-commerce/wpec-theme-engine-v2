@@ -19,7 +19,14 @@ require_once( WPSC_TE_V2_HELPERS_PATH . '/settings-page.php' );
  * @access private
  */
 function _wpsc_te2_action_admin_enqueue_styles() {
+	wp_register_style( 'wpsc-te2-chosen', WPSC_TE_V2_CSS_URL . '/chosen.min.css' );
 	wp_register_style( 'wpsc-te2-admin', WPSC_TE_V2_CSS_URL . '/admin.css' );
+
+	$current_screen = get_current_screen();
+
+	if ( $current_screen->id == 'settings_page_wpsc-settings' )
+		wp_enqueue_style( 'wpsc-te2-chosen' );
+
 	wp_enqueue_style( 'wpsc-te2-admin' );
 }
 
@@ -39,12 +46,23 @@ function _wpsc_te2_action_admin_enqueue_scripts() {
 		'wpsc-fix-reading-settings', WPSC_TE_V2_JS_URL . '/fix-reading-settings.js'
 	);
 
+	wp_register_script(
+		'wpsc-category-filter', WPSC_TE_V2_JS_URL . '/category-filter.js', array( 'wpsc-chosen' )
+	);
+
+	wp_register_script(
+		'wpsc-chosen', WPSC_TE_V2_JS_URL . '/chosen.jquery.min.js'
+	);
+
 	$current_screen = get_current_screen();
 
 	switch ( $current_screen->id ) {
-		// Settings->Store->Pages
 		case 'settings_page_wpsc-settings':
+			// Settings->Store->Pages
 			wp_enqueue_script( 'wpsc-auto-resize-field' );
+
+			// Settings->Store->Presentation
+			wp_enqueue_script( 'wpsc-category-filter' );
 			break;
 
 		// Settings->Reading

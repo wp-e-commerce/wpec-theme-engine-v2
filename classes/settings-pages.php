@@ -112,10 +112,10 @@ class WPSC_Settings_Tab_Pages extends _WPSC_Settings_Tab_Form
 			// Whether to display the store as front page
 			'store_as_front_page' => array(
 				'type' => 'radios',
-				'title' => 'Display main store on front page',
+				'title' => _x( 'Display main store on front page', 'page settings', 'wpsc' ),
 				'options' => array(
-					1 => 'Yes',
-					0 => 'No'
+					1 => _x( 'Yes', 'settings', 'wpsc' ),
+					0 => _x( 'No', 'settings', 'wpsc' ),
 				),
 			),
 
@@ -189,12 +189,12 @@ class WPSC_Settings_Tab_Pages extends _WPSC_Settings_Tab_Form
 				'options' => array(
 					1 => _x(
 						'Yes',
-						'permalinks setting / hierarchical product category URL',
+						'settings',
 						'wpsc'
 					),
 					0 => _x(
 						'No',
-						'permalinks setting / hierarchical product category URL',
+						'settings',
 						'wpsc'
 					),
 				),

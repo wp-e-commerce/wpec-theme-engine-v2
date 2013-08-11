@@ -5,10 +5,12 @@ class WPSC_Settings_Form
 	private $form_array = array();
 	private $sections = array();
 	private $validation_rules = array();
+	private $extra_fields = array();
 
-	public function __construct( $sections, $form_array ) {
+	public function __construct( $sections, $form_array, $extra_fields = array() ) {
 		$this->form_array = $form_array;
 		$this->sections = $sections;
+		$this->extra_fields = $extra_fields;
 
 		if ( empty( $this->sections ) ) {
 			$this->sections = array(
@@ -31,6 +33,8 @@ class WPSC_Settings_Form
 			$separator_id ++;
 			add_settings_section( 'section_separator_' . $separator_id, '', array( $this, 'callback_section_separator' ), 'wpsc-settings' );
 		}
+
+		$this->add_extra_fields();
 
 		// validation rules
 		add_filter( 'wpsc_settings_validation_rule_required', array( $this, 'filter_validation_rule_required' ), 10, 5 );
@@ -80,6 +84,12 @@ class WPSC_Settings_Form
 		register_setting( 'wpsc-settings', $field_array['name'] );
 	}
 
+	private function add_extra_fields() {
+		foreach ( $this->extra_fields as $field ) {
+			register_setting( 'wpsc-settings', "wpsc_{$field}" );
+		}
+	}
+
 	public function filter_validation_rule_required( $valid, $value, $field_name, $field_title, $field_id ) {
 		if ( $value == '' ) {
 			$field_anchor = '<a href="#' . esc_attr( $field_id ) . '">' . esc_html( $field_title ) . '</a>';
@@ -90,6 +100,10 @@ class WPSC_Settings_Form
 	}
 
 	public function validate_field( $value, $field_name ) {
+		if ( $field_name == 'wpsc_categories_to_filter_custom' ) {
+			var_dump( 'yo!' );
+			exit;
+		}
 		$internal_name = substr( $field_name, 5 ); // remove the wpsc_ part, WP core passes the whole option name
 		$rules = explode( '|', $this->form_array[$internal_name]['validation'] );
 		$field_title = $this->form_array[$internal_name]['title'];
@@ -153,7 +167,6 @@ class WPSC_Settings_Form
 			$radio_id  = $id . '-' . sanitize_title_with_dashes( $radio_value );
 			$checked   = $value == $radio_value;
 			$output   .= wpsc_form_radio( $name, $radio_value, $radio_label, $checked, array( 'id' => $radio_id, 'class' => $class ), false );
-			$output .= '<br />';
 		}
 
 		$output .= '<p class="howto">' . $description_html . '</p>';
@@ -174,7 +187,6 @@ class WPSC_Settings_Form
 			$output      .= wpsc_form_checkbox( $name, $checkbox_value, $checkbox_label, $checked, array( 'id' => $checkbox_id, 'class' => $class ), false );
 		}
 
-		$output .= '<br />';
 		$output .= '<p class="howto">' . $description_html . '</p>';
 
 		return $output;

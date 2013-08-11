@@ -35,6 +35,7 @@ function _wpsc_te_v2_includes() {
 	require_once( WPSC_TE_V2_HELPERS_PATH . '/widgets.php' );
 	require_once( WPSC_TE_V2_HELPERS_PATH . '/customer.php' );
 	require_once( WPSC_TE_V2_HELPERS_PATH . '/shortcodes.php' );
+	require_once( WPSC_TE_V2_HELPERS_PATH . '/product.php' );
 
 	if ( is_admin() )
 		require_once( WPSC_TE_V2_PATH . '/admin.php' );

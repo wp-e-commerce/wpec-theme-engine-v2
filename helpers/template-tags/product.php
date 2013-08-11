@@ -938,3 +938,165 @@ function wpsc_get_category_archive_title() {
 function wpsc_category_archive_title() {
 	echo wpsc_get_category_archive_title();
 }
+
+function wpsc_get_category_filter( $args = '' ) {
+	if ( ! wpsc_get_option( 'display_category_filter' ) )
+		return '';
+
+	if ( ! wpsc_is_store() && ! wpsc_is_product_category() )
+		return '';
+
+	$defaults = array(
+		'before'                    => '<div class="%s">',
+		'after'                     => '</div>',
+		'before_cat_list'           => '<ul class="%s">',
+		'after_cat_list'            => '</ul>',
+		'before_drill_down'         => '<ul class="%s">',
+		'after_drill_down'          => '</ul>',
+		'before_item'               => '<li class="%s">',
+		'after_item'                => '</li>',
+		'before_divider'            => '<span class="%s">',
+		'after_divider'             => '</span>',
+		'before_drill_down_divider' => '<span class="%s">',
+		'after_drill_down_divider'  => '<span class="%s">',
+		'divider'                   => '|',
+		'drill_down_divider'        => '&raquo;',
+		'padding'                   => 1,
+		'all_text'                  => _x( 'All', 'category filter', 'wpsc' ),
+	);
+
+	$defaults = apply_filters( 'wpsc_get_category_filter_default_args', $defaults );
+
+	$r = wp_parse_args( $args, $defaults );
+	extract( $r );
+
+	$before                    = sprintf( $before                   , 'wpsc-category-filter'                    );
+	$before_cat_list           = sprintf( $before_cat_list          , 'wpsc-category-filter-list'               );
+	$before_drill_down         = sprintf( $before_drill_down        , 'wpsc-category-filter-drill-down'         );
+	$before_divider            = sprintf( $before_divider           , 'wpsc-category-filter-divider'            );
+	$before_drill_down_divider = sprintf( $before_drill_down_divider, 'wpsc-category-filter-drill-down-divider' );
+
+	if ( $padding ) {
+		$length = strlen( $divider ) + $padding * 2;
+		$padding = str_repeat( "&nbsp;", $padding );
+		$divider = $padding . $divider . $padding;
+		$drill_down_divider = $padding . $drill_down_divider . $padding;
+	}
+
+	$divider = $before_divider . $divider . $after_divider;
+	$drill_down_divider = $before_drill_down_divider . $drill_down_divider . $after_drill_down_divider;
+
+	$displayed_categories = _wpsc_get_filtered_categories();
+	$ids = wp_list_pluck( $displayed_categories, 'term_id' );
+	$filters = array();
+	$drilldown = array();
+
+	// When drill down is enabled and we're not on store page
+	if ( wpsc_get_option( 'category_filter_drill_down' ) && ! wpsc_is_store() ) {
+		$term = get_queried_object();
+		$current = $term;
+
+		// we need to trace back this category ancestors, if none of its ancestors
+		// is one of the categories selected in the settings, the filter is not
+		// output
+
+		$ancestor_is_displayed = in_array( $term->term_id, $ids );
+		$ancestors = array();
+
+		while ( $term->parent ) {
+			$term = get_term( $term->parent, 'wpsc_product_category' );
+			$ancestors[] = $term;
+
+			if ( in_array( $term->term_id, $ids  ) ) {
+				$ancestor_is_displayed = true;
+				break;
+			}
+		}
+
+		if ( ! $ancestor_is_displayed )
+			return '';
+
+		// First item is always "All"
+		$before_all = sprintf( $before_item, 'wpsc-category-filter-drill-down-item wpsc-category-filter-drill-down-item-all' );
+		$link = '<a href="' . esc_url( wpsc_get_store_url() ) . '">' . esc_html_x( 'All', 'category filter', 'wpsc' ) . '</a>';
+		$drilldown[] = $before_all . $link . $drill_down_divider . $after_item;
+
+		$ancestors = array_reverse( $ancestors );
+		foreach ( $ancestors as $ancestor ) {
+			$before_this_item = sprintf( $before_item, 'wpsc-category-filter-drill-down-item' );
+			$url = add_query_arg( 'wpsc_category_filter', 1, wpsc_get_product_category_permalink( $ancestor->term_id ) );
+			$link = '<a href="' . esc_url( $url ) . '">' . esc_html( $ancestor->name ) . '</a>';
+			$drilldown[] = $before_this_item . $link . $drill_down_divider . $after_item;
+		}
+
+		// current category
+		$before_this_item = sprintf( $before_item, 'wpsc-category-filter-drill-down-item wpsc-category-filter-drill-down-item-active' );
+		$url = add_query_arg( 'wpsc_category_filter', 1, wpsc_get_product_category_permalink( $current->term_id ) );
+		$link = '<a href="' . esc_url( $url ) . '">' . esc_html( $current->name ) . '</a>';
+		$drilldown[] = $before_this_item . $link . $after_item;
+
+		$displayed_categories = get_terms( 'wpsc_product_category', array(
+			'parent'     => $current->term_id,
+			'hide_empty' => 0,
+		) );
+
+	// When drill down is disabled, or when it is enabled and we're on store page
+	} else {
+		// If we're in store page, just simply display all categories as selected in
+		// Settings->Store->Presentation
+
+		// if we're in the wrong category, don't display the filter
+		$current = get_queried_object_id();
+
+		if ( ! wpsc_is_store() && ! in_array( $current, $ids ) )
+			return '';
+
+		// if we're not on store page, and the 'wpsc_category_filter' query arg
+		// is not set to 1, don't display the filter
+		if ( ! wpsc_is_store() && empty( $_GET['wpsc_category_filter'] ) )
+			return '';
+
+		// First item is always "All"
+		$before_all = sprintf( $before_item, 'wpsc-category-filter-item wpsc-category-filter-item-all' );
+		$link = '<a href="' . esc_url( wpsc_get_store_url() ) . '">' . esc_html_x( 'All', 'category filter', 'wpsc' ) . '</a>';
+		$filters[] = $before_all . $link . $divider . $after_item;
+	}
+
+	$cats_count = count( $displayed_categories );
+
+	// Subsequent items are extracted from $displayed_categories
+	for ( $i = 0; $i < $cats_count; $i ++ ) {
+		$cat = $displayed_categories[$i];
+
+		$classes = 'wpsc-category-filter-item';
+
+		// mark current category
+		if ( ! wpsc_is_store() && $cat->term_id == $current )
+			$classes .= ' wpsc-category-filter-item-active';
+
+		$before_this_item = sprintf( $before_item, $classes );
+		$url = add_query_arg( 'wpsc_category_filter', 1, wpsc_get_product_category_permalink( $cat->term_id ) );
+		$link = '<a href="' . esc_url( $url ) . '">' . esc_html( $cat->name ) . '</a>';
+		$filter = $before_this_item . $link;
+		if ( $i < $cats_count - 1 )
+			$filter .= $divider;
+		$filter .= $after_item;
+
+		$filters[] = $filter;
+	}
+
+	$html = $before;
+	if ( ! empty( $drilldown ) )
+		$html .= $before_drill_down . implode( '', $drilldown ) . $after_drill_down;
+
+	if ( ! empty( $filters ) )
+		$html .= $before_cat_list . implode( '', $filters ) . $after_cat_list;
+
+	$html .= $after;
+
+	return apply_filters( 'wpsc_get_category_filter', $html, $filters, $r );
+}
+
+function wpsc_category_filter( $args = '' ) {
+	echo wpsc_get_category_filter();
+}
