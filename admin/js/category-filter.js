@@ -1,4 +1,6 @@
+/*globals WPSC_Settings_Page, jQuery */
 (function($) {
+	'use strict';
 	// elements
 	var catsToFilter, catsToFilterField, drillDown, radios, customCats, customCatsDiv;
 
@@ -20,7 +22,7 @@
 		}
 	};
 
-	$(function() {
+	$(WPSC_Settings_Page).on( 'wpsc_settings_tab_loaded_presentation', function() {
 		// assign elements
 		catsToFilterField = $( 'input[name="wpsc_categories_to_filter"]' );
 		catsToFilter = catsToFilterField.closest( 'tr' );
@@ -34,21 +36,5 @@
 
 		radios.on( 'change', toggleSettings );
 		catsToFilterField.on( 'change', toggleCustomCats );
-
-		$( '.wpsc-settings-category-filter-custom-select-all' ).on( 'click', function( e ) {
-			e.preventDefault();
-			customCats.find( 'option' ).prop( 'selected', true );
-			customCats.trigger( 'chosen:updated' );
-		} );
-
-		$( '.wpsc-settings-category-filter-custom-deselect-all' ).on( 'click', function( e ) {
-			e.preventDefault();
-			customCats.find( 'option' ).prop( 'selected', false );
-			customCats.trigger( 'chosen:updated' );
-		} );
-
-		customCats.chosen( {
-			search_contains: true
-		} );
 	});
 })(jQuery);

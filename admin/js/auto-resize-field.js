@@ -1,4 +1,6 @@
+/* globals jQuery, WPSC_Settings_Page */
 ;(function($) {
+	'use strict';
 	var phantom = false;
 	var event_change_size = function(e) {
 		var t = $(this);
@@ -14,7 +16,7 @@
 				'letter-spacing' : t.css('letter-spacing'),
 				'word-spacing'   : t.css('word-spacing')
 			});
-			t.after(phantom);
+			$('body').append(phantom);
 		}
 		text = t.val();
 		if (e) {
@@ -22,6 +24,7 @@
 		}
 		text = text.replace(/\s/g, '&nbsp;');
 		text += '&nbsp;';
+
 		phantom.html(text);
 		t.width(phantom.width());
 	};
@@ -50,7 +53,7 @@
 		}
 	};
 
-	$(function() {
+	$(WPSC_Settings_Page).on( 'wpsc_settings_tab_loaded_pages', function() {
 		var selector = '#wpsc-settings-form input[id$="-slug"]';
 		$('body').on('keypress', selector, event_change_size);
 		$('body').on('keyup', selector, event_sanitize).

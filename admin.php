@@ -24,7 +24,7 @@ function _wpsc_te2_action_admin_enqueue_styles() {
 
 	$current_screen = get_current_screen();
 
-	if ( $current_screen->id == 'settings_page_wpsc-settings' )
+	if ( in_array( $current_screen->id, array( 'settings_page_wpsc-settings', 'widgets' ) ) )
 		wp_enqueue_style( 'wpsc-te2-chosen' );
 
 	wp_enqueue_style( 'wpsc-te2-admin' );
@@ -39,19 +39,33 @@ function _wpsc_te2_action_admin_enqueue_styles() {
  */
 function _wpsc_te2_action_admin_enqueue_scripts() {
 	wp_register_script(
-		'wpsc-auto-resize-field', WPSC_TE_V2_JS_URL . '/auto-resize-field.js'
+		'wpsc-auto-resize-field', WPSC_TE_V2_JS_URL . '/auto-resize-field.js',
+		array( 'jquery' ),
+		WPSC_VERSION
 	);
 
 	wp_register_script(
-		'wpsc-fix-reading-settings', WPSC_TE_V2_JS_URL . '/fix-reading-settings.js'
+		'wpsc-fix-reading-settings', WPSC_TE_V2_JS_URL . '/fix-reading-settings.js',
+		array( 'jquery' ),
+		WPSC_VERSION
 	);
 
 	wp_register_script(
-		'wpsc-category-filter', WPSC_TE_V2_JS_URL . '/category-filter.js', array( 'wpsc-chosen' )
+		'wpsc-category-filter', WPSC_TE_V2_JS_URL . '/category-filter.js',
+		array( 'jquery' ),
+		WPSC_VERSION
 	);
 
 	wp_register_script(
-		'wpsc-chosen', WPSC_TE_V2_JS_URL . '/chosen.jquery.min.js'
+		'wpsc-multi-select', WPSC_TE_V2_JS_URL . '/multi-select.js',
+		array( 'jquery', 'wpsc-chosen' ),
+		WPSC_VERSION
+	);
+
+	wp_register_script(
+		'wpsc-chosen', WPSC_TE_V2_JS_URL . '/chosen.jquery.min.js',
+		array( 'jquery' ),
+		WPSC_VERSION
 	);
 
 	$current_screen = get_current_screen();
@@ -62,7 +76,13 @@ function _wpsc_te2_action_admin_enqueue_scripts() {
 			wp_enqueue_script( 'wpsc-auto-resize-field' );
 
 			// Settings->Store->Presentation
+			wp_enqueue_script( 'wpsc-multi-select' );
 			wp_enqueue_script( 'wpsc-category-filter' );
+			break;
+
+		// Appearance->Widgets
+		case 'widgets':
+			wp_enqueue_script( 'wpsc-multi-select' );
 			break;
 
 		// Settings->Reading

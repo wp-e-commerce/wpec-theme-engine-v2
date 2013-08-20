@@ -672,7 +672,7 @@ function _wpsc_form_select_options( $options, $selected_values ) {
 				$attributes = _wpsc_form_attributes( $attributes ) . ' ';
 				$output .= '<option ' . $attributes . selected( in_array( $value, $selected_values ), true, false ) . '>' . $option_title['title'] . '</option>';
 			} else {
-				$output .= _wpsc_form_select_optgroup( $value, $option_title, $selected_value );
+				$output .= _wpsc_form_select_optgroup( $value, $option_title, $selected_values );
 			}
 		} else {
 			$output .= '<option value="' . esc_attr( $value ) . '" ' . selected( in_array( $value, $selected_values ), true, false ) . '>' . $option_title . '</option>';
@@ -681,9 +681,9 @@ function _wpsc_form_select_options( $options, $selected_values ) {
 	return $output;
 }
 
-function _wpsc_form_select_optgroup( $group_name, $options, $selected_value ) {
+function _wpsc_form_select_optgroup( $group_name, $options, $selected_values ) {
 	$output = '<optgroup label="' . esc_attr( $group_name ) . '">';
-	$output .= _wpsc_form_select_options( $options, $selected_value );
+	$output .= _wpsc_form_select_options( $options, $selected_values );
 	$output .= '</optgroup>';
 	return $output;
 }

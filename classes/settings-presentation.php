@@ -35,11 +35,11 @@ class WPSC_Settings_Tab_Presentation extends _WPSC_Settings_Tab_Form
 		$selected = wpsc_get_option( "categories_to_filter_custom" );
 
 		$output .= '<div class="wpsc-settings-category-filter-custom">';
-		$output .= '<div class="wpsc-settings-category-filter-custom-all">';
+		$output .= '<div class="wpsc-settings-category-filter-custom-all wpsc-settings-all-none">';
 		$output .= sprintf(
 			_x( 'Select: %1$s %2$s', 'select all / none', 'wpsc' ),
-			'<a href="#" class="wpsc-settings-category-filter-custom-select-all">' . _x( 'All', 'select all', 'wpsc' ) . '</a>',
-			'<a href="#" class="wpsc-settings-category-filter-custom-deselect-all">' . __( 'None', 'wpsc' ) . '</a>'
+			'<a href="#" data-for="' . $id . '-custom-select" class="wpsc-multi-select-all">' . _x( 'All', 'select all', 'wpsc' ) . '</a>',
+			'<a href="#" data-for="' . $id . '-custom-select" class="wpsc-multi-select-none">' . _x( 'None', 'select none', 'wpsc' ) . '</a>'
 		);
 		$output .= '</div>';
 		$output .= wpsc_form_select(
@@ -48,6 +48,7 @@ class WPSC_Settings_Tab_Presentation extends _WPSC_Settings_Tab_Form
 			$options,
 			array(
 				'id'               => "{$id}-custom-select",
+				'class'            => 'wpsc-multi-select',
 				'multiple'         => 'multiple',
 				'size'             => 5,
 				'data-placeholder' => __( 'Select categories', 'wpsc' ),
