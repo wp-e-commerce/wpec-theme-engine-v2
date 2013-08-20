@@ -5,8 +5,10 @@ class WPSC_Controller {
 	public $title = '';
 	protected $view = '';
 	protected $message_collection;
-	private $main_query;
+	public $main_query;
 	private $needs_compat = true;
+	public $wp_filter = array();
+	public $merged_filters = array();
 
 	public function __get( $name ) {
 		// read-only properties
@@ -65,9 +67,9 @@ class WPSC_Controller {
 	}
 
 	private function prepare_compat() {
-		add_filter( 'the_content', array( $this, '_action_replace_content' ) );
 		add_filter( 'comments_array', array( $this, '_filter_comments_array' ), 10, 2 );
 		$this->reset_globals();
+		add_filter( 'the_content', array( $this, '_action_replace_content' ), 0 );
 	}
 
 	public function _filter_comments_array( $comments, $id ) {
@@ -104,16 +106,15 @@ class WPSC_Controller {
 			'ping_status'     => 'closed',
 			'comment_status'  => 'closed',
 			'comment_count'   => 0,
+			'filter'          => 'raw',
 		);
 
 		// default values for the global $wp_query object
 		$reset_wp_query = array(
 			'post_count'      => 1,
 			'is_404'          => false,
-			'is_page'         => true,
+			'is_page'         => false,
 			'is_single'       => false,
-			'is_archive'      => false,
-			'is_tax'          => false,
 			'is_home'         => false,
 			'is_front_page'   => false,
 			'comment_count'   => 0,
@@ -135,25 +136,14 @@ class WPSC_Controller {
 			);
 		}
 
-		// fool page.php into thinking this controller is a proper page
-		$queried_object = $reset_post;
-
-		// in case of the main store, the queried object should be the post
-		// type object as this is a product archive
-		if (
-			is_post_type_archive( 'wpsc-product' )
-			|| ( is_home() && wpsc_get_option( 'store_as_front_page' ) )
-		)
-			$queried_object = get_post_type_object( 'wpsc-product' );
+		$reset_post['post_content'] = $this->get_replaced_content();
 
 		// store the $wp_query away before butchering it, this will be restored
 		// later
 		$this->main_query = unserialize( serialize( $wp_query ) );
 
 		// Clear out the post related globals
-		$GLOBALS['post'] = $wp_query->post = (object) $reset_post;
-		$wp_query->queried_object = (object) $queried_object;
-		$wp_query->queried_object_id = 0;
+		$GLOBALS['post'] = $wp_query->post = new WP_Post( (object) $reset_post );
 		$wp_query->posts = array( $wp_query->post );
 
 		// Reset $wp_query flags
@@ -163,35 +153,40 @@ class WPSC_Controller {
 	}
 
 	public function _action_replace_content( $content ) {
+		$priority = has_filter( 'the_content', 'wpautop' );
+
+		if ( in_the_loop() && is_main_query() ) {
+
+			if ( $priority !== false )
+				remove_filter( 'the_content', 'wpautop' );
+		} elseif ( $priority === false ) {
+			add_filter( 'the_content', 'wpautop' );
+		}
+
+		return $content;
+	}
+
+	public function get_replaced_content() {
 		global $wp_query;
-
-		if ( ! is_main_query() || get_the_ID() )
-			return $content;
-
-		$this->restore_main_query();
 
 		$current_controller = _wpsc_get_current_controller_name();
 
 		$before = apply_filters(
 			'wpsc_replace_the_content_before',
 			'<div class="%s">',
-			$current_controller,
-			$content
+			$current_controller
 		);
 
 		$after  = apply_filters(
 			'wpsc_replace_the_content_after' ,
 			'</div>',
-			$current_controller,
-			$content
+			$current_controller
 		);
 
 		$before = sprintf( $before, 'wpsc-page wpsc-page-' . $current_controller );
 		ob_start();
 		wpsc_get_template_part( $this->view );
 		$content = ob_get_clean();
-
-		wp_reset_query();
 
 		return $before . $content . $after;
 	}

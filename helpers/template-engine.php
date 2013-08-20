@@ -382,7 +382,7 @@ add_filter( 'body_class', '_wpsc_filter_body_class' );
 function _wpsc_filter_title( $title ) {
 	if ( wpsc_is_controller() ) {
 		$controller = _wpsc_get_current_controller();
-		if (    is_post_type_archive( 'wpsc-product' )
+		if (   wpsc_is_store()
 			 || get_post_type() == 'page'
 		)
 			return $controller->title;
