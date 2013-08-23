@@ -1,5 +1,8 @@
 <?php
 
+if ( class_exists( 'WPSC_Product' ) )
+	return;
+
 class WPSC_Product {
 	private static $instances = array();
 	public static function get_instance( $post ) {
