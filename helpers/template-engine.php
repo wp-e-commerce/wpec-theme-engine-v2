@@ -1,22 +1,9 @@
 <?php
 
-if ( ! defined( 'WPSC_THEME_ENGINE_TEMPLATE_PART_FOLDER' ) )
-	define( 'WPSC_THEME_ENGINE_TEMPLATE_PART_FOLDER', 'wp-e-commerce' );
-
-if ( ! defined( 'WPSC_THEME_ENGINE_LESS_JS' ) )
-	define( 'WPSC_THEME_ENGINE_LESS_JS', false );
-
 function wpsc_locate_asset( $file ) {
-	$paths = array(
-		STYLESHEETPATH . '/wp-e-commerce/assets',
-	);
+	$engine = WPSC_Template_Engine::get_instance();
 
-	if ( is_child_theme() )
-		$paths[] = TEMPLATEPATH . '/wp-e-commerce/assets';
-
-	$paths[] = WPSC_TE_V2_ASSETS_PATH;
-
-	return _wpsc_locate_stuff( $paths, $file, false, false );
+	return _wpsc_locate_stuff( $engine->get_asset_paths(), $file, false, false );
 }
 
 function wpsc_locate_asset_uri( $file ) {
@@ -60,49 +47,30 @@ function _wpsc_locate_stuff( $paths, $files, $load = false, $require_once = true
  *
  * See {@link wpsc_locate_theme_file()} for more information about how this works.
  *
- * @see   wpsc_locate_theme_file()
+ * @see   _wpsc_locate_stuff()
  * @since 0.1
  * @uses  load_template()
- * @uses  wpsc_locate_theme_file()
+ * @uses  _wpsc_locate_stuff()
  *
  * @param  string|array $template_names Template files to search for, in order
  * @param  bool         $load           If true the template will be loaded if found
  * @param  bool         $require_once   Whether to use require_once or require. Default true. No effect if $load is false
  * @return string                       The template file name is located
  */
-function wpsc_locate_template( $template_names, $load = false, $require_once = true ) {
-	if ( $load && '' != $located )
-		load_template( $located, $require_once );
-
-	return $located;
-}
-
 function wpsc_locate_template_part( $files, $load = false, $require_once = true ) {
-	$paths = array(
-		STYLESHEETPATH . '/wp-e-commerce/template-parts',
-	);
+	$engine = WPSC_Template_Engine::get_instance();
 
-	if ( is_child_theme() )
-		$paths[] = TEMPLATEPATH . '/wp-e-commerce/template-parts';
-
-	$paths[] = WPSC_TE_V2_TEMPLATE_PARTS_PATH;
-
-	return _wpsc_locate_stuff( $paths, $files, $load, $require_once );
+	return _wpsc_locate_stuff( $engine->get_template_part_paths(), $files, $load, $require_once );
 }
 
 function wpsc_locate_view_wrappers( $files, $load = false, $require_once = true ) {
-	$paths = array(
-		STYLESHEETPATH . '/wp-e-commerce',
-	);
+	$engine = WPSC_Template_Engine::get_instance();
 
-	if ( is_child_theme() )
-		$paths[] = TEMPLATEPATH . '/wp-e-commerce';
-
-	return _wpsc_locate_stuff( $paths, $files, $load, $require_once );
+	return _wpsc_locate_stuff( $engine->get_view_wrapper_paths(), $files, $load, $require_once );
 }
 
 /**
- * This works just like get_template_part(), except that it uses wpsc_locate_template()
+ * This works just like get_template_part(), except that it uses wpsc_locate_template_path()
  * to search for the template part in 2 extra WP e-Commerce specific paths.
  *
  * @since 0.1
@@ -112,7 +80,7 @@ function wpsc_locate_view_wrappers( $files, $load = false, $require_once = true 
  * @uses  do_action()     Calls   'wpsc_get_template_part_{$slug}'           action.
  * @uses  do_action()     Calls   'wpsc_template_before_{$slug}-{$name}'     action.
  * @uses  do_action()     Calls   'wpsc_template_after_{$slug}-{$name}'      action.
- * @uses  wpsc_locate_template()
+ * @uses  wpsc_locate_template_path()
  *
  * @param  string $slug The slug name for the generic template.
  * @param  string $name The name of the specialised template. Optional. Default null.
