@@ -212,6 +212,8 @@ function wpsc_action_set_product_per_page_query_var( $query ) {
 
 	if ( wpsc_is_pagination_enabled() && $query->is_main_query() && ( wpsc_is_store() || wpsc_is_product_category() || wpsc_is_product_tag() ) )
 		$query->set( 'posts_per_archive_page', wpsc_get_option( 'products_per_page' ) );
+	else
+		$query->set( 'posts_per_archive_page', -1 );
 }
 add_action( 'pre_get_posts', 'wpsc_action_set_product_per_page_query_var', 10, 1 );
 
