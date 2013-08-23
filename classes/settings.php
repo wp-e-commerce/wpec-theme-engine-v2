@@ -71,3 +71,15 @@ class WPSC_Settings
 		return update_option( 'wpsc_' . $setting, $value );
 	}
 }
+
+// patch for beta sites which uses 'default_style' option
+add_filter( 'wpsc_default_settings', '_wpsc_filter_default_styles_setting' );
+function _wpsc_filter_default_styles_setting( $settings ) {
+	// prevent infinite loop
+	remove_filter( 'wpsc_default_settings', '_wpsc_filter_default_styles_setting' );
+
+	if ( ! wpsc_get_option( 'default_style' ) )
+		$settings['default_styles'] = array();
+
+	return $settings;
+}
