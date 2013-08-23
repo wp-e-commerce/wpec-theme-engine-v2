@@ -41,6 +41,7 @@ class WPSC_Settings_Form
 
 		// output field types
 		add_filter( 'wpsc_settings_form_output_textfield' , array( $this, 'filter_output_textfield'  ), 10, 2 );
+		add_filter( 'wpsc_settings_form_output_number',     array( $this, 'filter_output_number'     ), 10, 2 );
 		add_filter( 'wpsc_settings_form_output_radios'    , array( $this, 'filter_output_radios'     ), 10, 2 );
 		add_filter( 'wpsc_settings_form_output_checkboxes', array( $this, 'filter_output_checkboxes' ), 10, 2 );
 	}
@@ -136,6 +137,35 @@ class WPSC_Settings_Form
 		submit_button( __( 'Save Changes' ) );
 	}
 
+	public function filter_output_number( $output, $field_array ) {
+		extract( $field_array );
+
+		$description_html = apply_filters( $name . '_setting_description', $description, $field_array );
+
+		if ( ! isset( $class ) )
+			$class = 'small-text wpsc-number';
+
+		$output = '';
+		if ( ! empty( $prepend ) )
+			$output .= $prepend;
+
+		$atts = array(
+			'id' => $id,
+			'class' => $class,
+			'type' => 'number',
+		);
+
+		$output .= wpsc_form_input( $name, $value, $atts, false );
+
+		if ( ! empty( $append ) )
+			$output .= $append;
+
+		if ( $description )
+			$output .= '<p class="howto">' . $description_html . '</p>';
+
+		return $output;
+	}
+
 	public function filter_output_textfield( $output, $field_array ) {
 		extract( $field_array );
 		$description_html = apply_filters( $name . '_setting_description', $description, $field_array );
@@ -181,9 +211,10 @@ class WPSC_Settings_Form
 			$class = 'wpsc-checkbox';
 
 		$output = '';
+
 		foreach ( $options as $checkbox_value => $checkbox_label ) {
 			$checkbox_id  = $id . '-' . sanitize_title_with_dashes( $checkbox_value );
-			$checked      = $value == $checkbox_value;
+			$checked      = in_array( $checkbox_value, $value );
 			$output      .= wpsc_form_checkbox( $name, $checkbox_value, $checkbox_label, $checked, array( 'id' => $checkbox_id, 'class' => $class ), false );
 		}
 
